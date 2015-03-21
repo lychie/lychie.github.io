@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC 入门</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,helloworld,入门"/>
+    <meta name="description" content="springmvc,helloworld,入门"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC 入门</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-03-20</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment">项目依赖</span>
+			<pre class="brush:xml;">
+			&lt;properties&gt;
+			  &lt;spring.version&gt;4.1.5.RELEASE&lt;/spring.version&gt;
+			&lt;/properties&gt;
+			&lt;dependencies&gt;
+			  &lt;dependency&gt;
+			    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			    &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+			    &lt;version&gt;${spring.version}&lt;/version&gt;
+			  &lt;/dependency&gt;
+			  &lt;dependency&gt;
+			    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			    &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+			    &lt;version&gt;${spring.version}&lt;/version&gt;
+			  &lt;/dependency&gt;
+			&lt;/dependencies&gt;
+			</pre>
+			<span class="fragment" style="font-family:Consolas">web.xml</span>
+			<pre class="brush: xml;">
+			&lt;servlet&gt;
+			  &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+			  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+			  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+			&lt;/servlet&gt;
+			
+			&lt;servlet-mapping&gt;
+			  &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+			  &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+			&lt;/servlet-mapping&gt;
+			
+			&lt;context-param&gt;
+			   &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+			   &lt;param-value&gt;/WEB-INF/mvc-dispatcher-servlet.xml&lt;/param-value&gt;
+			&lt;/context-param&gt;
+			
+			&lt;listener&gt;
+			   &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+			&lt;/listener&gt;
+			</pre>
+		    <div>
+		    在 web.xml 中需要配置 DispatcherServlet, 它用于处理符合规则的外部请求, 并将请求分发给合适的控制器来处理。<br>
+		    这里使用默认的 /WEB-INF/[servlet-name]-servlet.xml ( /WEB-INF/mvc-dispatcher-servlet.xml ) 作为 spring mvc 的配置文件。<br>
+		    除此之外, 还可以通过 init parameter 来指定 spring mvc 的配置文件, 具体如下： 
+		    </div>
+			<pre class="brush: xml;">
+			&lt;servlet&gt;
+			  &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+			  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+			  &lt;init-param&gt;
+			    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+			    &lt;param-value&gt;classpath:mvc-dispatcher.xml&lt;/param-value&gt;
+			  &lt;/init-param&gt;
+			  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+			&lt;/servlet&gt;
+			
+			&lt;servlet-mapping&gt;
+			  &lt;servlet-name&gt;mvc-dispatcher&lt;/servlet-name&gt;
+			  &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+			&lt;/servlet-mapping&gt;
+			</pre>
+			<span class="fragment" style="font-family:Consolas">mvc-dispatcher-servlet.xml</span>
+			<pre class="brush:xml;">
+			&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+			&lt;beans xmlns="http://www.springframework.org/schema/beans"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xmlns:mvc="http://www.springframework.org/schema/mvc"
+			  xmlns:context="http://www.springframework.org/schema/context"
+			  xsi:schemaLocation="http://www.springframework.org/schema/beans
+			  http://www.springframework.org/schema/beans/spring-beans.xsd
+			  http://www.springframework.org/schema/mvc
+			  http://www.springframework.org/schema/mvc/spring-mvc.xsd
+			  http://www.springframework.org/schema/context
+			  http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+			  
+			  &lt;mvc:annotation-driven /&gt;
+			  
+			  &lt;context:component-scan base-package="org.lychie.**.controller" /&gt;
+			  
+			  &lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+			    &lt;property name="prefix" value="/WEB-INF/pages/" /&gt;
+			    &lt;property name="suffix" value=".jsp" /&gt;
+			  &lt;/bean&gt;
+			  
+			&lt;/beans&gt;
+			</pre>
+		    <div>spring mvc 配置文件, InternalResourceViewResolver 用于支持 servlet 和 jsp 视图的解析。
+		    <br>视图的逻辑位置为：prefix + 逻辑名称 + suffix, 如逻辑名称为 hello, 则视图的逻辑位置为 /WEB-INF/pages/hello.jsp
+		    </div>
+		    <span class="fragment" style="font-family:Consolas">Controller</span>
+			<pre class="brush: java;">
+			package org.lychie.springmvc.controller;
+			
+			import org.springframework.ui.ModelMap;
+			import org.springframework.stereotype.Controller;
+			import org.springframework.web.bind.annotation.RequestMapping;
+			
+			@Controller
+			public class HelloWorldController {
+			
+				@RequestMapping("/hello")
+				public String helloWorld(Model model){
+					model.addAttribute("message", "Hello World!");
+					return "hello";
+				}
+				
+			}</pre>
+			<div>@RequestMapping 用于将请求的 url 映射到相应的处理方法上。
+			<br>访问方式 ：http://localhost:8080/spring-mvc-helloworld/hello
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://qd.baidupcs.com/file/bf1391159a227fa5472e716543ffa750?bkt=p2-nb-882&fid=4064922984-250528-903504185453807&time=1426950696&sign=FDTAXERLBH-DCb740ccc5511e5e8fedcff06b081203-u1LUFWWQr2whYNhnHNt%2FNE8QrnA%3D&to=qb&fm=Nin,B,T,t&newver=1&newfm=1&flow_ver=3&sl=75628623&expires=8h&rt=sh&r=924296919&mlogid=819155931&vuk=4064922984&vbdid=2973653242&fin=spring-mvc-helloworld.zip&fn=spring-mvc-helloworld.zip" target="_blank">spring-mvc-helloworld.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15032023" data-title="Spring MVC 入门" data-url="http://lychie.github.io/pages/articles/springmvc/15032023.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright&nbsp;&nbsp;&copy;&nbsp;&nbsp;2014-2015&nbsp;&nbsp;Lychie&nbsp;&nbsp;Fan,&nbsp;&nbsp;Hosted&nbsp;&nbsp;on&nbsp;&nbsp;github.
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

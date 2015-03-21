@@ -1,0 +1,380 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC 映射请求</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,@RequestMapping,@ResponseBody,@RequestBody,@PathVariable,正则表达式"/>
+    <meta name="description" content="springmvc,@RequestMapping,@ResponseBody,@RequestBody,@PathVariable,正则表达式"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC 映射请求</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-03-21</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div class="desc">@RequestMapping</div>
+		    <div>
+		    @RequestMapping 注解用于将请求映射到控制器的某个具体的处理方法上。它可以标注在方法级别上, 也可以标注在类级别上, 标注在类级别上不是必须的。
+		    </div>
+		    <span class="fragment">示例代码片段 1</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(method = GET)
+				public String list() {
+					return "class-level-mapping/list";
+				}
+				
+				@RequestMapping(value = "/pathname", method = GET)
+				public String mappedByPathname(Model model) {
+					model.addAttribute("message", "mapped by /pathname");
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+			<span class="desc">@RequestMapping.value</span>
+		    <div>
+		    value 用于映射请求的 url 表达式, 以缩小映射的范围。
+		    <br>参数类型 String[], 如 value = "/pathname", value = {"/", "/pathname"}
+		    <br>当注解只有一个参数 value 时, value 可以省略。<br>
+		    @RequestMapping("/class-level-mapping") 完整的写法是 @RequestMapping(value = "/class-level-mapping")。
+		    </div>
+		    <span class="desc">@RequestMapping.method</span>
+		    <div>
+		    method 用于映射请求的 HTTP Request Method 类型, 以缩小映射的范围。
+		    <br>参数类型 RequestMethod[], 如 method = GET, method = {GET, POST}
+		    <br>若缺省, 默认是映射所有的 HTTP Request Methods 类型 ( GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE )。
+		    </div>
+		    <div>
+		    @RequestMapping 注解标注在类级别上, 表明当前控制器的处理方法映射的路径均相对于 /class-level-mapping。
+		    <br>GET /class-level-mapping --> list
+		    <br>GET /class-level-mapping/pathname --> mappedByPathname
+		    </div>
+		    <span class="fragment">示例代码片段 2</span>
+		    <pre class="brush:java;">
+		    @Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+				
+				@RequestMapping(value = "/parameter", method = GET, params = "param")
+				public String mappedByParameter(Model model, String param) {
+					model.addAttribute("message", "the param is " + param);
+					return "class-level-mapping/result";
+				}
+				
+				@RequestMapping(value = "/parameter", method = GET, params = "!param")
+				public String mappedByParameterNegation(Model model) {
+					model.addAttribute("message", "mapped by /parameter, not supposed param");
+					return "class-level-mapping/result";
+				}
+				
+				@RequestMapping(value = "/argument", method = GET, params = "param=1")
+				public String mappedByParameterEquals(Model model) {
+					model.addAttribute("message", "mapped by /argument, only param = 1");
+					return "class-level-mapping/result";
+				}
+				
+				@RequestMapping(value = "/argument", method = GET, params = "param!=1")
+				public String mappedByParameterNotEquals(Model model) {
+					model.addAttribute("message", "mapped by /argument, only param != 1");
+					return "class-level-mapping/result";
+				}
+				
+			}
+		    </pre>
+		    <span class="desc">@RequestMapping.params</span>
+		    <div>
+		    params 用于映射请求的参数, 以缩小映射的范围。
+		    <br>参数类型 String[], 如 params = "param", params = "!param", params = "param=1", params = "param!=1", params = {"p1", "p2"}
+		    <br>params = "param", 表明处理方法只处理 url 中含 param 参数的请求。
+		    <br>params = "!param", 表明处理方法只处理 url 中不含 param 参数的请求。
+		    <br>params = "param=1", 表明处理方法只处理 url 中含 param=1 参数的请求。
+		    <br>params = "param!=1", 表明处理方法只处理 url 中不含 param=1 参数的请求。
+		    <br>GET /class-level-mapping/parameter --> mappedByParameterNegation
+		    <br>GET /class-level-mapping/parameter?p=s --> mappedByParameterNegation
+		    <br>GET /class-level-mapping/parameter?param --> mappedByParameter
+		    <br>GET /class-level-mapping/parameter?param=s --> mappedByParameter
+		    <br>GET /class-level-mapping/argument --> mappedByParameterNotEquals
+		    <br>GET /class-level-mapping/argument?param=1 --> mappedByParameterEquals
+		    <br>GET /class-level-mapping/argument?param=2 --> mappedByParameterNotEquals
+		    </div>
+		    <span class="fragment">示例代码片段 3</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/header", method = POST, headers = "content-type=application/*")
+				public String mappedByHeader(Model model) {
+					model.addAttribute("message", "mapped by /header + presence of header");
+					return "class-level-mapping/result";
+				}
+				
+				@RequestMapping(value = "/header", headers = "!content-type")
+				public String mappedByHeaderNegation(Model model) {
+					model.addAttribute("message", "mapped by /header + absence of header");
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+		    <span class="desc">@RequestMapping.headers</span>
+		    <div>
+		    headers 用于映射请求的 Request Headers 内容, 以缩小映射的范围。
+		    <br>参数类型 String[], 如 headers = "content-type=text/html", headers = "!content-type", headers = "content-type!=text/*"
+		    <br>GET &nbsp;/class-level-mapping/header --> mappedByHeaderNegation
+		    <br>POST /class-level-mapping/header --> mappedByHeader
+		    </div>
+		    <span class="fragment">示例代码片段 4</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/produce", method = GET, produces = "application/json")
+				public @ResponseBody Person mappedByProduce() {
+					return new Person(1001, "Lychie Fan");
+				}
+				
+				public static class Person {
+		
+					private int id;
+					private String name;
+					
+					public Person() {
+						
+					}
+					
+					public Person(int id, String name) {
+						this.id = id;
+						this.name = name;
+					}
+			
+					// ignore getters and setters
+			
+					@Override
+					public String toString() {
+						return "[ id : " + id + ", name : " + name + " ]";
+					}
+					
+				}
+				
+			}
+			</pre>
+		    <span class="desc">@RequestMapping.produces ( 生产者 )</span>
+		    <div>
+		    produces 表明处理方法产生的媒体类型, 再由请求的 Request Headers 中的 Accept 来进行匹配, 以缩小映射的范围。
+		    <br>参数类型 String[], 如 produces = MediaType.APPLICATION_JSON_VALUE, produces = {"text/plain", "application/*"}
+		    <br>produces = "application/*", 若 Request Headers 中的 Accept 含 application/xml, application/json 等都可匹配。
+		    </div>
+		    <span class="desc">@ResponseBody</span>
+		    <div>
+		    表明处理方法的返回值绑定到 Response Body。使用时将跳过视图解析部分, 返回如 json, xml 等格式的数据。
+		    </div>
+		    <span class="fragment" style="color:gray">引入依赖</span>
+		    <pre class="brush:xml;">
+		    &lt;dependency&gt;
+		      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+		      &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+		      &lt;version&gt;2.4.1&lt;/version&gt;
+		    &lt;/dependency&gt;
+		    </pre>
+		    <div>GET /class-level-mapping/produce --> mappedByProduce --> {"id":1001,"name":"Lychie Fan"}</div>
+		    <span class="fragment">示例代码片段 5</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/consume", method = POST, consumes = "application/json")
+				public String mappedByConsume(@RequestBody Person person) {
+					System.out.println("person = " + person);
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+			<span class="desc">@RequestMapping.consumes ( 消费者 )</span>
+		    <div>
+		    consumes 表明处理方法消费的媒体类型, 由请求的 Request Headers 中的 Content-Type 来进行匹配类型, 以缩小映射的范围。
+		    <br>参数类型 String[], 如 consumes = "application/*", consumes = {"text/plain", "application/*"}
+		    </div>
+		    <span class="desc">@RequestBody</span>
+		    <div>
+		    表明处理方法的参数是绑定到 Request Body。使用时从 Request Body 中读取绑定的数据。
+		    </div>
+		    <pre class="brush:html;">
+		    &lt;body&gt;
+			  &lt;h3&gt;
+			    &lt;p&gt;&lt;a href="javascript:;" class="consume"&gt;class-level-mapping/consume&lt;/a&gt;&lt;/p&gt;
+			  &lt;/h3&gt;
+			  &lt;textarea style="display:none"&gt;{"id":1001,"name":"Lychie Fan"}&lt;/textarea&gt;
+			  &lt;script type="text/javascript"&gt;
+			    $(function(){
+			  	  $(".consume").click(function(){
+			  		  $.ajax({
+			  			  type : "post",
+			  			  url : "class-level-mapping/consume",
+			  			  data : $("textarea").val(),
+			  			  contentType : "application/json",
+			  			  success : function(){
+			  				  alert("well, now you can see the execution result on the console");
+			  			  }
+			  		  });
+			  	  });
+			    });
+			  &lt;/script&gt;
+			&lt;/body&gt;
+		    </pre>
+		    <div>
+		    POST /class-level-mapping/consume --> mappedByConsume --> person = [ id : 1001, name : Lychie Fan ]
+		    </div>
+		    <span class="fragment">示例代码片段 6</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/foo/{bar}", method = GET)
+				public String mappedByUriTemplate(Model model, @PathVariable String bar){
+					model.addAttribute("message", bar);
+					return "class-level-mapping/result";
+				}
+				
+				@RequestMapping(value = "/food/{name}/{kind}", method = GET)
+				public String mappedByUriTemplate(Model model, @PathVariable("name") String foodName, @PathVariable String kind) {
+					model.addAttribute("message", foodName + ", " + kind);
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+			<span class="desc">@PathVariable</span>
+			<div>
+			{bar} 是变量的写法, /foo/{bar} 是一个 URI 模板, bar 部分是可变的, @PathVariable 注解用于将处理方法的参数绑定到这个 URI 模板中。
+			<br>如请求 /foo/foobar, 处理方法 mappedByUriTemplate 执行时, foobar 将作为处理方法参数 bar 的值被设置进去。
+			<br>若处理方法的参数绑定的变量与模板中的变量名不一致, 则需要在处理方法中显式的指明参数绑定的是模板中的哪个变量, 如上述代码所示。
+			<br>GET /class-level-mapping/foo/foobar --> mappedByUriTemplate(Model, String) --> foobar
+			<br>GET /class-level-mapping/food/fruit/banana --> mappedByUriTemplate(Model, String, String) --> fruit, banana
+			</div>
+			<span class="fragment">示例代码片段 7</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/{filename:[a-z-_]+}{extension:\\.[a-z]+}", method = GET)
+				public String mappedByRegular(Model model, @PathVariable String filename, @PathVariable String extension) {
+					model.addAttribute("message", filename + extension);
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+			<span class="desc">正则表达式的运用</span>
+			<div>
+			{filename:[a-z-_]+} 其中, filename 是变量名, [a-z-_]+ 是正则表达式的值。
+			<br>GET /class-level-mapping/spring-mvc-mapping.zip --> mappedByRegular --> spring-mvc-mapping.zip
+			</div>
+			<span class="fragment">示例代码片段 8</span>
+		    <pre class="brush:java;">
+			@Controller
+			@RequestMapping("/class-level-mapping")
+			public class ClassLevelMappingController {
+			
+				@RequestMapping(value = "/pathname", method = GET)
+				public String mappedByPathname(Model model) {
+					model.addAttribute("message", "mapped by /pathname");
+					return "class-level-mapping/result";
+				}
+			
+				@RequestMapping(value = "/pathname/*", method = GET)
+				public String mappedByPathnamePattern(Model model) {
+					model.addAttribute("message", "mapped by /pathname/*");
+					return "class-level-mapping/result";
+				}
+			
+				@RequestMapping(value = "/pathname/*.html", method = GET)
+				public String mappedByPathnameExtension(Model model) {
+					model.addAttribute("message", "mapped by /pathname/*.html");
+					return "class-level-mapping/result";
+				}
+				
+			}
+			</pre>
+			<div>
+			/pathname/* 模式, * 匹配 0 个至多个字符, 不含路径符。<br>
+			GET /class-level-mapping/pathname --> mappedByPathname<br>
+			GET /class-level-mapping/pathname/public --> mappedByPathnamePattern<br>
+			GET /class-level-mapping/pathname/sample.html --> mappedByPathnameExtension
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://qd.baidupcs.com/file/334740967e772ce92a3ab914aeb458b6?bkt=p2-nb-882&fid=4064922984-250528-682808107432285&time=1426950674&sign=FDTAXERLBH-DCb740ccc5511e5e8fedcff06b081203-D2t7CtfBkrD%2Fi8lQF%2BmVJBPREPE%3D&to=qb&fm=Nin,B,T,t&newver=1&newfm=1&flow_ver=3&sl=75628623&expires=8h&rt=sh&r=465648759&mlogid=1543951720&vuk=4064922984&vbdid=2973653242&fin=spring-mvc-mapping.zip&fn=spring-mvc-mapping.zip" target="_blank">spring-mvc-mapping.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15032122" data-title="Spring MVC 映射请求" data-url="http://lychie.github.io/pages/articles/springmvc/15032122.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright&nbsp;&nbsp;&copy;&nbsp;&nbsp;2014-2015&nbsp;&nbsp;Lychie&nbsp;&nbsp;Fan,&nbsp;&nbsp;Hosted&nbsp;&nbsp;on&nbsp;&nbsp;github.
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
