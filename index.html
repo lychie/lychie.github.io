@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>範 宗 雲 博 客 - 首 页</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="lychie,lychie fan,github,首页"/>
+    <meta name="description" content="lychie,lychie fan,github,首页"/>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/main.css">
+    <script src="javascripts/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="plugins/scrolltotop/css/main.css">
+    <script src="plugins/scrolltotop/js/main.js"></script>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li class='active'><a href='index.html'>首 页</a></li>
+          <li><a href='articles.html'>文 章</a></li>
+          <li><a href='archives.html'>归 档</a></li>
+          <li class='last'><a href='classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+        <div class="item">
+          <div class="title">
+            <a class="light" href="pages/articles/springmvc/15032122.html">Spring MVC 映射请求</a>
+            <div class="posted-on">2015-03-21</div>
+          </div>
+          <div class="summary">涉及 @RequestMapping, @ResponseBody, @RequestBody, @PathVariable 注解以及正则表达式的运用。
+          <br>@RequestMapping 注解用于将请求映射到控制器的某个具体的处理方法上。它可以标注在方法级别上, 也可以标注在类级别上, 标注在类级别上不是必须的。
+          <br>value 用于映射请求的 url 表达式, 以缩小映射的范围。 参数类型 String[], 如 value = "/pathname", value = {"/", "/pathname"}。
+          当注解只有一个参数 value 时, value 可以省略。@RequestMapping("/class-level-mapping") 完整的写法是 @RequestMapping(value = "/class-level-mapping") . . . . . .
+          </div>
+        </div>
+        <div class="item">
+          <div class="title">
+            <a class="light" href="pages/articles/springmvc/15032023.html">Spring MVC 入门</a>
+            <div class="posted-on">2015-03-20</div>
+          </div>
+          <div class="summary">在 web.xml 中需要配置 DispatcherServlet, 它用于处理符合规则的外部请求, 并将请求分发给合适的控制器来处理。
+          <br>这里使用默认的 /WEB-INF/[servlet-name]-servlet.xml ( /WEB-INF/mvc-dispatcher-servlet.xml ) 作为 spring mvc 的配置文件。<br>
+		    除此之外, 还可以通过 init parameter 来指定 spring mvc 的配置文件 . . . . . .
+          </div>
+        </div>
+      </section>
+      <footer>
+        <p>
+          Copyright&nbsp;&nbsp;&copy;&nbsp;&nbsp;2014-2015&nbsp;&nbsp;Lychie&nbsp;&nbsp;Fan,&nbsp;&nbsp;Hosted&nbsp;&nbsp;on&nbsp;&nbsp;github.
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
