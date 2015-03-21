@@ -1,0 +1,360 @@
+#main-content {
+	line-height: 28px;
+	letter-spacing: 0.7px;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+#main-content #project {
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+}
+
+#main-content #project .version {
+	font-size: 16px;
+}
+
+#main-content #project #description {
+	font-size: 14px;
+	font-weight: normal;
+}
+
+#main-content ul {
+	padding: 0 0 0 0;
+}
+
+#main-content ul li {
+	display: inline;
+	list-style: none;
+	background: url("images/bullet.png") 0px 0px no-repeat;
+	padding-left: 20px;
+	padding-right: 28px;
+	letter-spacing: 0.7px;
+	line-height: 35px;
+}
+
+#main-content a:hover {
+	color: #FF69B4;
+}
+
+#main-content #contents {
+
+}
+
+#main-content #contents pre {
+	background: none;
+	border: none;
+}
+
+#main-content .i {
+	color: #454545;
+	font-weight: bold;
+	font-style: italic;
+}
+
+/* #main-content .ii {
+	font-weight: bold;
+	font-style: italic;
+} */
+
+#main-content .text {
+	line-height: 30px;
+}
+
+#main-content .e, .summary .e {
+	padding: 0 6px 0 4px;
+	font-style: italic;
+}
+
+#main-content hr {
+  background: transparent url("images/hr.png") center center repeat-x;
+}
+
+.quote {
+	color: #777;
+}
+
+.quote_l {
+	margin-left: 5px;
+	margin-right: 2px;
+	padding-right: 10px;
+	background: transparent url("images/quote_l.png") 0px 0px no-repeat;
+}
+
+.quote_r {
+	margin-right: 5px;
+	margin-left: 5px;
+	padding-left: 10px;
+	background: transparent url("images/quote_r.png") 0px 0px no-repeat;
+}
+
+.item_t .summary a {
+	color: gray;
+	line-height: 25px;
+	letter-spacing: 0.5px;
+	-moz-transition: all 1.5s ease;
+	-webkit-transition: all 1.5s ease;
+	transition: all 1.5s ease;
+}
+
+.item_t .summary a:hover {
+	color: #6495ED;
+}
+
+#main-content #contents .precode pre {
+	/* background: none repeat scroll 0 0 #333333; */
+    border-radius: 3px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 15px;
+    margin: 0 0 20px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#main-content #contents .precode pre, #main-content #contents .precode code {
+	font-family: monospace,serif;
+    font-size: 1em;
+}
+
+#main-content #contents .precode pre code {
+    margin: 0;
+    padding: 0;
+}
+
+#main-content #contents .precode code {
+   /*  background: none repeat scroll 0 0 #333; */
+    border-radius: 2px;
+    /* color: #efefef; */
+    background: none;
+    color: #333;
+    font-family: "Lucida Sans",Monaco,Bitstream Vera Sans Mono,Lucida Console,Terminal;
+    font-size: 13px;
+}
+
+.cleanl {
+	padding-left: 20px;
+}
+
+/*  TABLE BEGIN  */
+
+#main-content #contents table {
+    *border-collapse: collapse; /* IE7 and lower */
+    border-spacing: 0;
+    width: 100%;
+}
+
+#main-content #contents .bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc; 
+    -moz-box-shadow: 0 1px 1px #ccc; 
+    box-shadow: 0 1px 1px #ccc;         
+}
+
+#main-content #contents .bordered tr:hover {
+    background: #fbf8e9;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;     
+}    
+    
+#main-content #contents .bordered td, #main-content #contents .bordered th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 10px;  
+}
+
+#main-content #contents .bordered th {
+    background-color: #dce9f9;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+    background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    /* text-align: center; */
+}
+
+#main-content #contents .bordered td:first-child, #main-content #contents .bordered th:first-child {
+    border-left: none;
+}
+
+#main-content #contents .bordered th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+#main-content #contents .bordered th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+#main-content #contents .bordered th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+#main-content #contents .bordered tr:last-child td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+#main-content #contents .bordered tr:last-child td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+/*  TABLE END  */
+
+#main-content #contents .boxer {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin: 0 0 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 3px 5px;
+    border-radius: 2px;
+    color: #555;
+    font-family: "Lucida Sans",Monaco,Bitstream Vera Sans Mono,Lucida Console,Terminal;
+    font-size: 13px;
+}
+
+.wrapper .item {
+	margin-bottom: 25px;
+}
+
+.wrapper .item .title {
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-left-width: 1px;
+	border-style: solid solid none;
+	border-top-color: #d1d1e8;
+	border-right-color: #d1d1e8;
+	border-left-color: #d1d1e8;
+	padding: 7px;
+	background-color: #e6e6fc;
+	line-height: 18px;
+	margin-top: 12px;
+	letter-spacing: 0.7px;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.wrapper .item .title a {
+	color: #008080;
+	letter-spacing: 0.7px;
+	font-weight: bold;
+	font-size: 12px;
+	font-family: Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .title span {
+	letter-spacing: 0.7px;
+	font-size: 12px;
+	font-family: Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .title .posted-on {
+	float: right;
+	color: gray;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .title .total {
+	float: right;
+	color: gray;
+	font-size: 12px;
+	font-weight: normal;
+	letter-spacing: 0.8px;
+	font-family: Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .summary {
+	border: 1px solid #dddddd;
+	padding: 7px;
+	background-color: #F7F7F7;
+	margin-bottom: 12px;
+	line-height: 28px;
+	letter-spacing: 0.7px;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .summary ul {
+	margin: 0;
+	padding: 0;
+	font-family: Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+.wrapper .item .summary ul li {
+	list-style: none;
+	padding-left: 20px;
+	background: url("images/bullet.png") no-repeat 0px;
+}
+
+#main-content #article-title {
+	font-size: 18px;
+	text-align: center;
+	font-weight: bold;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+#main-content #article-attribute {
+	color: gray;
+	font-size: 12px;
+	text-align: center;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+#main-content #article-attribute #author, #posted, #origin{
+	padding-right: 20px;
+}
+
+#main-content #dev {
+	margin-bottom: 18px;
+}
+
+#main-content #dev .items {
+	margin-right: 20px;
+	text-decoration: underline;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
+
+#main-content .desc{
+	color: #FF6347;
+	margin-top: 20px;
+}
+
+.fragment {
+	color: #3CB371;
+	border-bottom: #3CB371 1px solid;
+	font-family: Georgia, Consolas, Helvetica, Arial, sans-serif;
+}
+
+.download {
+	background: url("images/zip.png") no-repeat;
+	padding-left: 20px;
+}
+
+a.light:hover {
+	color: #FF69B4;
+}
+
+.title a.light:hover {
+	color: #FF69B4;
+}
