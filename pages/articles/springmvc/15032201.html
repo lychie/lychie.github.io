@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC @RequestParam</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,@RequestParam,数组,集合,list"/>
+    <meta name="description" content="springmvc,@RequestParam,数组,集合,list"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC @RequestParam</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-03-22</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    @RequestParam 注解用于绑定请求中的参数到处理方法的参数中。
+		    </div>
+		    <span class="fragment">示例代码片段 1</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/find", method = GET)
+				public String find(Model model, @RequestParam int id) {
+					model.addAttribute(MESSAGE, id);
+					return RESULT_PAGE;
+				}
+
+				@RequestMapping(value = "/modify", method = GET)
+				public String modify(Model model, @RequestParam Integer id) {
+					model.addAttribute(MESSAGE, id == null ? "null" : id);
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+		    <div>@RequestParam 注解标注的参数默认是必须的 ( required = true ), 不可缺省。
+		    <br>就基本数据类型而言, 其值要求是必须的, 如果允许空值, 需要用包装类型来替代 ( required = true )。<br>
+		    GET /product/find?id=31100042 --> find --> 31100042<br>
+		    GET /product/find?id &nbsp;--> 400 Error ( Bad Request )<br>
+		    GET /product/find?id= --> 400 Error ( Bad Request )<br>
+		    GET /product/modify?id --> modify --> null<br>
+		    GET /product/modify?id=31100042 --> modify --> 31100042
+		    </div>
+		    <span class="fragment">示例代码片段 2</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/search", method = GET)
+				public String search(Model model, @RequestParam("name") String productName) {
+					model.addAttribute(MESSAGE, productName);
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+			<div>若处理方法的参数名与绑定的请求的参数名称不一致, 需要在处理方法中用 value 注解显式的指明绑定的请求的参数的名称。<br>
+			GET /product/search?name=books&type=it --> search --> books
+			</div>
+		    <span class="fragment">示例代码片段 3</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/add", method = GET)
+				public String add(Model model, @RequestParam(required = false) int id) {
+					model.addAttribute(MESSAGE, id);
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/edit", method = GET)
+				public String edit(Model model, @RequestParam(required = false) Integer id) {
+					model.addAttribute(MESSAGE, id == null ? "null" : id);
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+			<div>
+			required : 
+			<br>用于表明请求参数是否是必须的。默认值为 true。
+			<br>若为 required = false, 且请求没有提供参数, 则使用 null 作为参数的值, 这就要求参数类型不能是基本数据类型, 否则报 500<br>
+			GET /product/add --> 500 Error<br>
+			GET /product/add?id=31100042 --> add --> 31100042<br>
+			GET /product/edit --> edit --> null<br>
+			GET /product/product/edit?id=31100042 --> edit --> 31100042
+			</div>
+		    <span class="fragment">示例代码片段 4</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/obtain", method = GET)
+				public String obtain(Model model, @RequestParam(defaultValue = "desc") String sort) {
+					model.addAttribute(MESSAGE, "sort by " + sort);
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/select", method = GET)
+				public String select(Model model, @RequestParam(defaultValue = "${default.amount}") int amount) {
+					model.addAttribute(MESSAGE, "select " + amount + " records");
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/fetch", method = GET)
+				public String fetch(Model model, @RequestParam(defaultValue = "${default.food}") String food) {
+					model.addAttribute(MESSAGE, "food is " + food + ", default is fruit");
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+			<div>
+			defaultValue : 
+			<br>当请求中没有提供参数或参数的值为空 ( "" ), 则使用 defaultValue 注解的值 ( 支持 SpEL )。相当于隐式的设置了 required = false。
+			</div>
+			<span class="fragment-abs">product.properties</span>
+			<pre class="brush:xml;">
+			default.amount = 10
+			default.food = fruit
+			</pre>
+			<div>
+			GET /product/obtain --> obtain --> desc<br>
+			GET /product/obtain?sort --> obtain --> desc<br>
+			GET /product/obtain?sort=asc --> obtain --> asc<br>
+			GET /product/select --> select --> 10<br>
+			GET /product/select?amount=15 --> select --> 15<br>
+			GET /product/fetch --> fetch --> fruit<br>
+			GET /product/fetch?food=vegetable --> fetch --> vegetable
+			</div>
+		    <span class="fragment">示例代码片段 5</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/query", method = GET)
+				public String query(Model model, @RequestParam Map&lt;String, Object&gt; params) {
+					model.addAttribute(MESSAGE, params);
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/seek", method = GET)
+				public String seek(Model model, @RequestParam MultiValueMap&lt;String, Object&gt; params) {
+					model.addAttribute(MESSAGE, params);
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+			<div>当 @RequestParam 注解标注在 Map 或 MultiValueMap 类型参数上时 ( 参数名任意 ), 该参数包含所有请求的参数。<br>
+			GET /product/query?type=it&name=java --> query --> {type=it, name=java}<br>
+			GET /product/seek?province=guangdong&county=maoming --> seek --> {province=[guangdong], county=[maoming]}
+			</div>
+		    <span class="fragment">示例代码片段 6</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/delete", method = GET)
+				public String delete(Model model, @RequestParam int[] ids) {
+					model.addAttribute(MESSAGE, "delete where id in " + Arrays.toString(ids));
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/remove", method = GET)
+				public String remove(Model model, @RequestParam("ids") int[] productIds) {
+					model.addAttribute(MESSAGE, "remove where id in " + Arrays.toString(productIds));
+					return RESULT_PAGE;
+				}
+				
+				@RequestMapping(value = "/update", method = GET)
+				public String update(Model model, @RequestParam List&lt;Integer&gt; ids) {
+					model.addAttribute(MESSAGE, "update where id in " + ids);
+					return RESULT_PAGE;
+				}
+			
+			}
+			</pre>
+			<div>用数组或集合类型绑定请求参数, 请求参数的值用 "," 分隔即可。<br>
+			GET /product/delete?ids=31100042,31100043 --> delete --> [31100042, 31100043]<br>
+			GET /product/remove?ids=31100044,31100045 --> remove --> [31100044, 31100045]<br>
+			GET /product/update?ids=31100046,31100047 --> update --> [31100046, 31100047]
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1sjmclGx" target="_blank">spring-mvc-request-param.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15032201" data-title="Spring MVC @RequestParam" data-url="http://lychie.github.io/pages/articles/springmvc/15032201.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright&nbsp;&nbsp;&copy;&nbsp;&nbsp;2014-2015&nbsp;&nbsp;Lychie&nbsp;&nbsp;Fan,&nbsp;&nbsp;Hosted&nbsp;&nbsp;on&nbsp;&nbsp;github.
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
