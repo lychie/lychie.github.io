@@ -358,3 +358,9 @@ a.light:hover {
 .title a.light:hover {
 	color: #FF69B4;
 }
+
+.fragment-abs {
+	color: gray;
+	border-bottom: gray 1px solid;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
