@@ -74,6 +74,26 @@
 				public @ResponseBody Product latestProduct() {
 					return new Product(1001, "戴尔-XPS-13(XPS13D-9343-1508)笔记本", 6999);
 				}
+
+				public static class Product {
+			
+					private int id;
+					private String name;
+					private double price;
+			
+					public Product() {
+			
+					}
+			
+					public Product(int id, String name, double price) {
+						this.id = id;
+						this.name = name;
+						this.price = price;
+					}
+			
+					// ignore getters and setters
+			
+				}
 			
 			}
 			</pre>
