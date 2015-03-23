@@ -689,17 +689,18 @@ nav ul a:hover {
 }
 
 footer {
-	width: 180px;
+	/* width: 180px; */
 	position: fixed;
-	left: 50%;
+	left: 39%;
 	margin-left: -530px;
 	bottom: 20px;
 	text-align: right;
 	line-height: 16px;
-	font-size: 14px;
+	/* font-size: 14px; */
 	letter-spacing: 0.7px;
 	color: #929292;
 	padding: 18px 0 0 0;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
 }
 
 @media print , screen and (max-width: 1060px) {
@@ -981,4 +982,8 @@ footer {
 
 #cssmenu > ul li.active a:hover {
 	color: #1E90FF;
+}
+
+#cnzz {
+	display:none;
 }
