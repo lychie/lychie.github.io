@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC @ResponseBody</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,@ResponseBody,json,list,map,对象"/>
+    <meta name="description" content="springmvc,@ResponseBody,json,list,map,对象"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC @ResponseBody</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-03-23</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    @ResponseBody 注解表明处理方法的返回值不作为视图名称来解析, 而直接写出到 Http Response Body。
+		    </div>
+		    <span class="fragment">示例代码片段 1 <span style="font-family:Consolas">( pojo )</span></span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/latest", method = POST)
+				public @ResponseBody Product latestProduct() {
+					return new Product(1001, "戴尔-XPS-13(XPS13D-9343-1508)笔记本", 6999);
+				}
+			
+			}
+			</pre>
+			<pre class="brush:html;">
+			&lt;p&gt;
+			  &lt;textarea disabled="disabled"&gt;&lt;/textarea&gt;
+			  &lt;button id="latest"&gt;latest&lt;/button&gt;
+			&lt;/p&gt;
+			&lt;script type="text/javascript"&gt;
+			  $(function(){
+				  $("#latest").click(function() {
+					  var self = $(this);
+					  _post(self, function(data){
+						  var result = data.id + "  " + data.name + "  " + data.price;
+						  self.parent().find("textarea").val(result);
+					  });
+				  });
+				  var _post = function(e, _callback) {
+					  $.ajax({
+						  type : "post",
+						  url  : "product/" + e.text(),
+						  success : function(result) {
+							  _callback(result);
+						  }
+					  });
+				  }
+			  });
+			&lt;/script&gt;
+			</pre>
+		    <div>
+		      <img src="../../../images/articles/springmvc/15032322/response-body-latest.png">
+		    </div>
+		    <span class="fragment">示例代码片段 2 <span style="font-family:Consolas">( list )</span></span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/serial", method = POST)
+				public @ResponseBody List&lt;Product&gt; serialProduct() {
+					List&lt;Product&gt; list = new ArrayList&lt;&gt;();
+					list.add(new Product(1001, "戴尔-XPS-13(XPS13D-9343-1508)笔记本", 6999));
+					list.add(new Product(1002, "戴尔-XPS-13(XPS13D-9343-1708)笔记本", 8999));
+					return list;
+				}
+			
+			}
+			</pre>
+			<pre class="brush:html;">
+			&lt;p&gt;
+			  &lt;textarea disabled="disabled"&gt;&lt;/textarea&gt;
+			  &lt;button id="serial"&gt;serial&lt;/button&gt;
+			&lt;/p&gt;
+			&lt;script type="text/javascript"&gt;
+			  $(function(){
+				  $("#serial").click(function() {
+					  var self = $(this);
+					  _post(self, function(data){
+						  var result = "";
+						  $.each(data, function(i, v){
+							  result += v.id + "  " + v.name + "  " + v.price + "\r\n";
+						  });
+						  self.parent().find("textarea").val(result);
+					  });
+				  });
+			  });
+			&lt;/script&gt;
+			</pre>
+		    <div>
+		      <img src="../../../images/articles/springmvc/15032322/response-body-serial.png">
+		    </div>
+		    <span class="fragment">示例代码片段 3 <span style="font-family:Consolas">( map )</span></span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/product")
+			public class ProductController {
+			
+				@RequestMapping(value = "/brand", method = POST)
+				public @ResponseBody Map&lt;String, Product&gt; brandProduct() {
+					Map&lt;String, Product&gt; map = new HashMap&lt;&gt;();
+					map.put("dell", new Product(1003, "戴尔-XPS-13(XPS13D-9343-1808T)笔记本", 13000));
+					return map;
+				}
+			
+			}
+			</pre>
+			<pre class="brush:html;">
+			&lt;p&gt;
+			  &lt;textarea disabled="disabled"&gt;&lt;/textarea&gt;
+			  &lt;button id="brand"&gt;brand&lt;/button&gt;
+			&lt;/p&gt;
+			&lt;script type="text/javascript"&gt;
+			  $(function(){
+				  $("#brand").click(function() {
+					  var self = $(this);
+					  _post(self, function(data){
+						  var result = data.dell.id + "  " + data.dell.name + "  " + data.dell.price;
+						  self.parent().find("textarea").val(result);
+					  });
+				  });
+			  });
+			&lt;/script&gt;
+			</pre>
+		    <div>
+		      <img src="../../../images/articles/springmvc/15032322/response-body-brand.png">
+		    </div>
+		    <span class="fragment-abs">不要忘记引入依赖</span>
+		    <pre class="brush:xml;">
+		    &lt;dependency&gt;
+		      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+		      &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+		      &lt;version&gt;2.4.1&lt;/version&gt;
+		    &lt;/dependency&gt;
+		    </pre>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1kTII5jp" target="_blank">spring-mvc-response-body.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15032322" data-title="Spring MVC @ResponseBody" data-url="http://lychie.github.io/pages/articles/springmvc/15032322.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
