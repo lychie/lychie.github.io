@@ -689,14 +689,11 @@ nav ul a:hover {
 }
 
 footer {
-	/* width: 180px; */
 	position: fixed;
-	left: 39%;
-	margin-left: -530px;
+	left: 40%;
 	bottom: 20px;
 	text-align: right;
 	line-height: 16px;
-	/* font-size: 14px; */
 	letter-spacing: 0.7px;
 	color: #929292;
 	padding: 18px 0 0 0;
