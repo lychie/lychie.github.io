@@ -103,7 +103,7 @@
 			</pre>
 		    <div>
 		    在 web.xml 中需要配置 DispatcherServlet, 它用于处理符合规则的外部请求, 并将请求分发给合适的控制器来处理。<br>
-		    这里使用默认的 /WEB-INF/[servlet-name]-servlet.xml ( /WEB-INF/mvc-dispatcher-servlet.xml ) 作为 spring mvc 的配置文件。<br>
+		 spring mvc 约定去 WEB-INF 下查找 [servlet-name]-servlet.xml ( /WEB-INF/mvc-dispatcher-servlet.xml ) 文件作为其配置文件。<br>
 		    除此之外, 还可以通过 init parameter 来指定 spring mvc 的配置文件, 具体如下： 
 		    </div>
 			<pre class="brush: xml;">
