@@ -87,7 +87,7 @@
 			<span class="desc">@RequestMapping.value</span>
 		    <div>
 		    value 用于映射请求的 url 表达式, 以缩小映射的范围。
-		    <br>参数类型 String[], 如 value = "/pathname", value = {"/", "/pathname"}
+		    <br>参数类型 String[], 如 value = "/pathname", value = {"/", "/pathname"} ( 多个值时, 访问任意一个都是等效, 如 / 和 /pathname )
 		    <br>当注解只有一个参数 value 时, value 可以省略。<br>
 		    @RequestMapping("/class-level-mapping") 完整的写法是 @RequestMapping(value = "/class-level-mapping")。
 		    </div>
