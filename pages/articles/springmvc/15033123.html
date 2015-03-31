@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC 重定向</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,重定向,redirect,RedirectAttributes,addFlashAttribute,addAttribute"/>
+    <meta name="description" content="springmvc,重定向,redirect,RedirectAttributes,addFlashAttribute,addAttribute"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC 重定向</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-03-31</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    spring mvc 中使用 redirect: 前缀可完成重定向的动作。下面介绍如何带参重定向。
+		    </div>
+		    <span class="fragment">示例代码片段 1 ( 带参重定向 )</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/user")
+			public class UserController {
+			
+				/**
+				 * 登录页面
+				 */
+				@RequestMapping(value = "/login", method = GET)
+				public String login() {
+					return "login";
+				}
+				
+				/**
+				 * 用户登录, 登录完成重定向到首页
+				 */
+				@RequestMapping(value = "/login", method = POST)
+				public String login(RedirectAttributes attributes, User user) {
+					attributes.addFlashAttribute("user", user);
+					return "redirect:/user/home";
+				}
+			
+				/**
+				 * 首页
+				 */
+				@RequestMapping(value = "/home", method = GET)
+				public String home() {
+					return "home";
+				}
+				
+			}
+			</pre>
+			<span class="fragment-abs">home.jsp</span>
+			<pre class="brush:html;">
+			&lt;body&gt;
+			  Welcome, ${user.name}!
+			&lt;/body&gt;
+			</pre>
+			<div>
+			"redirect:/user/home" 表明重定向到 /user/home, RedirectAttributes.addFlashAttribute(key, value) 可以携带参数到重定向的 url, 并且参数不会显式的出现在重定向的 url 中。实际上, 这样的参数数据是暂存在用户 session 中, 这些参数数据可以作为一个对象被保持着, 直至下一次请求发起时, 这些数据才会被清掉。
+			<br>user.name == lychie, POST /user/login --> /user/home --> Welcome, lychie!
+			</div>
+			<span class="fragment">示例代码片段 2 ( 带参重定向 )</span>
+			<pre class="brush:java;">
+			@Controller
+			@RequestMapping("/admin")
+			public class AdminController {
+			
+				/**
+				 * 登录页面
+				 */
+				@RequestMapping(value = "/login", method = GET)
+				public String login() {
+					return "login";
+				}
+				
+				/**
+				 * 用户登录, 登录完成重定向到首页
+				 */
+				@RequestMapping(value = "/login", method = POST)
+				public String login(RedirectAttributes attributes, User user) {
+					attributes.addAttribute("name", user.getName());
+					return "redirect:/admin/home";
+				}
+			
+				/**
+				 * 首页
+				 */
+				@RequestMapping(value = "/home", method = GET)
+				public String home(ModelMap model, String name) {
+					try {
+						name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					model.addAttribute("currUser", name);
+					return "admin_home";
+				}
+				
+			}
+			</pre>
+			<span class="fragment-abs">admin_home.jsp</span>
+			<pre class="brush:html;">
+			&lt;body&gt;
+			  Welcome, ${currUser}!
+			&lt;/body&gt;
+			</pre>
+			<div>
+			RedirectAttributes.addAttribute(key, value) 可以携带字符串格式参数到重定向的 url, 并且参数会显式的出现在重定向的 url 中。若参数中含有中文, 会出现中文乱码, 可通过转码的方式来解决 ( 如上 )。
+			<br>user.name == lychie, POST /admin/login --> /admin/home?name=lychie --> Welcome, lychie!
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1qWA1haW" target="_blank">spring-mvc-redirect.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15033123" data-title="Spring MVC 重定向" data-url="http://lychie.github.io/pages/articles/springmvc/15033123.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
