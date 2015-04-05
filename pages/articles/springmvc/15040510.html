@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC 视图解析器</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,视图解析器,UrlBasedViewResolver,InternalResourceViewResolver,FreeMarkerViewResolver,VelocityViewResolver,ContentNegotiatingViewResolver,json,xml"/>
+    <meta name="description" content="springmvc,视图解析器,UrlBasedViewResolver,InternalResourceViewResolver,FreeMarkerViewResolver,VelocityViewResolver,ContentNegotiatingViewResolver,json,xml"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC 视图解析器</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-05</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    spring mvc 控制器里的所有处理方法的逻辑视图 ( 通过返回一个 String, View, ModelAndView 等 ) 由视图解析器来解析。spring mvc 支持多种视图技术, 并提供了多种视图解析器。
+		    </div>
+		    <span class="fragment-abs">1．UrlBasedViewResolver</span>
+			<pre class="brush:xml;">
+			&lt;bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"&gt;
+			  &lt;property name="prefix" value="/WEB-INF/pages/" /&gt;
+			  &lt;property name="suffix" value=".jsp" /&gt;
+			  &lt;property name="viewClass" value="org.springframework.web.servlet.view.JstlView" /&gt;
+			&lt;/bean&gt;
+			</pre>
+			<div>viewClass 项是必须的, 常用的有 ：
+			<br>org.springframework.web.servlet.view.JstlView
+			<br>org.springframework.web.servlet.view.InternalResourceView
+			<br>org.springframework.web.servlet.view.velocity.VelocityView
+			<br>org.springframework.web.servlet.view.freemarker.FreeMarkerView
+			<br>InternalResourceView 用于渲染 JSP 视图, JstlView 是 InternalResourceView 的一个扩展类, 用于显式的支持 JSTL。VelocityView 用于渲染 velocity 视图, FreeMarkerView 用于渲染 freemarker 视图。
+			<br>UrlBasedViewResolver 支持 "redirect:" 和 "forward:" 前缀, 以完成重定向和转发的动作。每个逻辑视图名称被解析成 ：prefix + [logical-view<br>-name] + suffix, 如逻辑视图名称为 home, 则视图的逻辑位置为 ：/WEB-INF/pages/home.jsp, 并通过创建一个具体的 viewClass 实例来渲染该视图。
+			</div>
+			<span class="fragment-abs">2．InternalResourceViewResolver</span>
+			<pre class="brush:xml;">
+			&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+			  &lt;property name="prefix" value="/WEB-INF/pages/" /&gt;
+			  &lt;property name="suffix" value=".jsp" /&gt;
+			&lt;/bean&gt;
+			</pre>
+			<div>InternalResourceViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 InternalResourceView 来渲染视图。</div>
+			<span class="fragment-abs">3．FreeMarkerViewResolver</span>
+			<pre class="brush:xml;">
+			&lt;bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"&gt;
+			  &lt;property name="templateLoaderPath" value="/WEB-INF/pages/" /&gt;
+			  &lt;property name="freemarkerSettings"&gt;
+			    &lt;props&gt;
+			      &lt;!-- 检查模板是否被更新, 单位为秒。0 代表不缓存, 每次都重新加载 --&gt;
+			      &lt;prop key="template_update_delay"&gt;0&lt;/prop&gt;
+			      &lt;!-- 日期格式 --&gt;
+			      &lt;prop key="date_format"&gt;yyyy-MM-dd&lt;/prop&gt;
+			      &lt;!-- 日期时间格式 --&gt;
+			      &lt;prop key="datetime_format"&gt;yyyy-MM-dd HH:mm:ss&lt;/prop&gt;
+		        &lt;/props&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver"&gt;
+		      &lt;property name="suffix" value=".ftl" /&gt;
+		      &lt;property name="contentType" value="text/html;charset=UTF-8"/&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<div>FreeMarkerViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 FreeMarkerView 来渲染视图。使用 freemarker 视图技术需要引入 spring-context-support 及 freemarker 依赖。</div>
+			<pre class="brush:xml;">
+			&lt;dependency&gt;
+		      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+		      &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;
+		      &lt;version&gt;${spring.version}&lt;/version&gt;
+		    &lt;/dependency&gt;
+		    &lt;dependency&gt;
+		      &lt;groupId&gt;org.freemarker&lt;/groupId&gt;
+		      &lt;artifactId&gt;freemarker&lt;/artifactId&gt;
+		      &lt;version&gt;${freemarker.version}&lt;/version&gt;
+		    &lt;/dependency&gt;
+			</pre>
+			<span class="fragment-abs">4．VelocityViewResolver</span>
+			<pre class="brush:xml;">
+			&lt;bean class="org.springframework.web.servlet.view.velocity.VelocityConfigurer"&gt;
+		      &lt;property name="resourceLoaderPath" value="/WEB-INF/pages/" /&gt;
+		      &lt;property name="configLocation" value="/WEB-INF/velocity.properties" /&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.view.velocity.VelocityViewResolver"&gt;
+		      &lt;property name="suffix" value=".vm" /&gt;
+		      &lt;property name="contentType" value="text/html;charset=utf-8" /&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<span class="fragment-abs">velocity.properties</span>
+			<pre class="brush:html;">
+			input.encoding = UTF-8
+			output.encoding = UTF-8
+			resource.loader = file
+			file.resource.loader.cache = false
+			file.resource.loader.class = org.apache.velocity.runtime.resource.loader.FileResourceLoader
+			</pre>
+			<div>或者 ：</div>
+			<pre class="brush:xml;">
+		    &lt;bean class="org.springframework.web.servlet.view.velocity.VelocityConfigurer"&gt;
+		      &lt;property name="resourceLoaderPath" value="/WEB-INF/pages/" /&gt;
+		      &lt;property name="velocityProperties"&gt;
+		        &lt;props&gt;
+		          &lt;prop key="input.encoding"&gt;UTF-8&lt;/prop&gt;
+		          &lt;prop key="output.encoding"&gt;UTF-8&lt;/prop&gt;
+		          &lt;prop key="resource.loader"&gt;file&lt;/prop&gt;
+		          &lt;prop key="file.resource.loader.cache"&gt;false&lt;/prop&gt;
+		          &lt;prop key="file.resource.loader.class"&gt;org.apache.velocity.runtime.resource.loader.FileResourceLoader&lt;/prop&gt;
+		        &lt;/props&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.view.velocity.VelocityViewResolver"&gt;
+		      &lt;property name="suffix" value=".vm" /&gt;
+		      &lt;property name="contentType" value="text/html;charset=utf-8" /&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<div>VelocityViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 VelocityView 来渲染视图。使用 velocity 视图技术需要引入 spring-context-support 及 velocity 依赖。</div>
+			<pre class="brush:xml;">
+			&lt;dependency&gt;
+		      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+		      &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;
+		      &lt;version&gt;${spring.version}&lt;/version&gt;
+		    &lt;/dependency&gt;
+		    &lt;dependency&gt;
+		      &lt;groupId&gt;org.apache.velocity&lt;/groupId&gt;
+		      &lt;artifactId&gt;velocity&lt;/artifactId&gt;
+		      &lt;version&gt;${velocity.version}&lt;/version&gt;
+		    &lt;/dependency&gt;
+			</pre>
+			<span class="fragment-abs">5．ContentNegotiatingViewResolver</span>
+			<pre class="brush:xml;">
+			&lt;bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean"&gt;
+		      &lt;!-- 以路径扩展名确定请求的媒体类型, 如 info.json -&gt; application/json, 默认为 true --&gt;
+		      &lt;property name="favorPathExtension" value="true" /&gt;
+		      &lt;!-- 以参数确定请求的媒体类型, 如 info?format=json -&gt; application/json, 默认为 false --&gt;
+		      &lt;property name="favorParameter" value="true" /&gt;
+		      &lt;!-- 定义参数名, 默认的参数名为 format --&gt;
+		      &lt;property name="parameterName" value="format"/&gt;
+		      &lt;!-- 是否忽略 Http Accept Header, 默认为 false --&gt;
+		      &lt;property name="ignoreAcceptHeader" value="false"/&gt;
+		      &lt;!-- 请求的媒体类型映射 --&gt;
+		      &lt;property name="mediaTypes"&gt;
+		        &lt;props&gt;
+		          &lt;prop key="json"&gt;application/json&lt;/prop&gt;
+		          &lt;prop key="xml"&gt;application/xml&lt;/prop&gt;
+		          &lt;prop key="html"&gt;text/html&lt;/prop&gt;
+		        &lt;/props&gt;
+		      &lt;/property&gt;
+		      &lt;!-- 设置默认的 content type --&gt;
+		      &lt;property name="defaultContentType" value="text/html" /&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"&gt;
+		      &lt;property name="contentNegotiationManager" ref="contentNegotiationManager" /&gt;
+		      &lt;!-- 视图解析器 --&gt;
+		      &lt;property name="viewResolvers"&gt;
+		        &lt;list&gt;
+		          &lt;bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/&gt;
+		          &lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+		            &lt;property name="prefix" value="/WEB-INF/pages/" /&gt;
+		            &lt;property name="suffix" value=".jsp" /&gt;
+		          &lt;/bean&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		      &lt;!-- 默认的视图 --&gt;
+		      &lt;property name="defaultViews"&gt;
+		        &lt;list&gt;
+		          &lt;!-- json 视图 --&gt;
+		          &lt;bean class= "org.springframework.web.servlet.view.json.MappingJackson2JsonView" /&gt;
+		          &lt;!-- xml 视图 --&gt;
+		          &lt;bean class= "org.springframework.web.servlet.view.xml.MarshallingView"&gt;
+		            &lt;property name="marshaller"&gt;
+		              &lt;bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller"&gt;
+		                &lt;!-- 扫描的包 --&gt;
+		                &lt;property name="packagesToScan" value="org.lychie.model" /&gt;
+		              &lt;/bean&gt;
+		            &lt;/property&gt;
+		          &lt;/bean&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<span class="fragment-abs">Controller</span>
+			<pre class="brush:java;">
+			@RequestMapping(value = "/domain/info", method = GET)
+			public String info(ModelMap model) {
+				model.addAttribute("user", new User(1001, "lychie", "lychie@yeah.net"));
+				return "info";
+			}
+			</pre>
+			<span class="fragment-abs">User</span>
+			<pre class="brush:java;">
+			package org.lychie.model;
+
+			import javax.xml.bind.annotation.XmlRootElement;
+			
+			@XmlRootElement(name="user")
+			public class User {
+			
+				private int id;
+				private String name;
+				private String mail;
+				
+				public User() {
+					
+				}
+				
+				public User(int id, String name, String mail) {
+					this.id = id;
+					this.name = name;
+					this.mail = mail;
+				}
+			
+				//ignore setters and getters
+				
+			}
+			</pre>
+			<span class="fragment-abs">info.jsp</span>
+			<pre class="brush:html;">
+			&lt;body&gt;
+		      &lt;h2&gt;
+		      id : ${user.id}&lt;br&gt;
+		      name : ${user.name}&lt;br&gt;
+		      mail : ${user.mail}
+		      &lt;/h2&gt;
+		    &lt;/body&gt;
+			</pre>
+			<div>
+			ContentNegotiatingViewResolver 用于支持同一资源的多种不同的表现形式, 如 jsp、json、xml 等。具体采用何种方式来表现, 取决于 Http Accept Header。如 ：
+			<br>Accept : application/xml, 则数据表现为 xml 格式
+			<br>Accept : application/json, 则数据表现为 json 格式
+			<br>GET /domain/info
+			<pre class="brush:html;">
+			id : 1001
+			name : lychie
+			mail : lychie@yeah.net
+			</pre>
+			GET /domain/info.xml 或 GET /domain/info?format=xml
+			<pre class="brush:xml;">
+			This XML file does not appear to have any style information associated with it. The document tree is shown below.
+			&lt;user&gt;
+			  &lt;id&gt;1001&lt;/id&gt;
+			  &lt;name&gt;lychie&lt;/name&gt;
+			  &lt;mail&gt;lychie@yeah.net&lt;/mail&gt;
+			&lt;/user&gt;
+			</pre>
+			GET /domain/info.json 或 GET /domain/info?format=json
+			<pre class="brush:html;">
+			{"user":{"id":1001,"name":"lychie","mail":"lychie@yeah.net"}}
+			</pre>
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1hqH3pkC" target="_blank">spring-mvc-view-resolvers.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040510" data-title="Spring MVC 视图解析器" data-url="http://lychie.github.io/pages/articles/springmvc/15040510.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
