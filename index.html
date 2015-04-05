@@ -29,6 +29,19 @@
       <section>
         <div class="item">
           <div class="title">
+            <a class="light" href="pages/articles/springmvc/15040510.html">Spring MVC 视图解析器</a>
+            <div class="posted-on">2015-04-05</div>
+          </div>
+          <div class="summary">spring mvc 控制器里的所有处理方法的逻辑视图由视图解析器来解析。spring mvc 支持多种视图技术, 并提供了多种视图解析器。
+          <br>1．UrlBasedViewResolver 支持 "redirect:" 和 "forward:" 前缀。每个逻辑视图名称被解析成 ：prefix + [logical-view-name] + suffix, 如逻辑视图名称为 home, 则视图的逻辑位置为 ：/WEB-INF/pages/home.jsp, 并通过创建一个具体的 viewClass 实例来渲染该视图。
+          <br>2．InternalResourceViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 InternalResourceView 来渲染视图。
+          <br>3．FreeMarkerViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 FreeMarkerView 来渲染视图。
+          <br>4．VelocityViewResolver 是 UrlBasedViewResolver 的一个扩展类, 它使用 VelocityView 来渲染视图。
+          <br>5．ContentNegotiatingViewResolver 用于支持同一资源的多种不同的表现形式, 如 jsp、json、xml 等。具体采用何种方式来表现, 取决于 Http Accept Header . . . . . .
+          </div>
+        </div>
+        <div class="item">
+          <div class="title">
             <a class="light" href="pages/articles/springmvc/15040123.html">Spring MVC &lt;mvc:resources&gt;</a>
             <div class="posted-on">2015-04-01</div>
           </div>
