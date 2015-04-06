@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC RequestMappingHandlerAdapter</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,RequestMappingHandlerAdapter,FormattingConversionServiceFactoryBean,ConfigurableWebBindingInitializer,StringHttpMessageConverter,数据转换,数据绑定,日期转换,json乱码,防止JSON数据中文乱码"/>
+    <meta name="description" content="springmvc,RequestMappingHandlerAdapter,FormattingConversionServiceFactoryBean,ConfigurableWebBindingInitializer,StringHttpMessageConverter,数据转换,数据绑定,日期转换,json乱码,防止JSON数据中文乱码"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC RequestMappingHandlerAdapter</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-06</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    RequestMappingHandlerAdapter 负责处理请求参数到处理方法参数的绑定以及数据类型转换等工作。
+		    </div>
+		    <span class="fragment">数据类型转换配置示例</span>
+			<pre class="brush:xml;">
+			&lt;!-- 配置数据转换服务 --&gt;
+		    &lt;bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"&gt;
+		      &lt;property name="converters"&gt;
+		        &lt;set&gt;
+		          &lt;bean class="org.lychie.converter.DateConverter" p:pattern="yyyy-MM-dd" /&gt;
+		        &lt;/set&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;!-- 配置数据绑定, 依赖数据转换服务进行绑定 --&gt;
+		    &lt;bean id="webBindingInitializer" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"&gt;
+		      &lt;property name="conversionService" ref="conversionService" /&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"&gt;
+		      &lt;property name="webBindingInitializer" ref="webBindingInitializer" /&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<span class="fragment-abs">org.lychie.converter.DateConverter</span>
+			<pre class="brush:java;">
+			import java.util.Date;
+			import java.text.DateFormat;
+			import java.text.ParseException;
+			import java.text.SimpleDateFormat;
+			import org.springframework.util.StringUtils;
+			import org.lychie.exception.ConverterCastException;
+			import org.springframework.core.convert.converter.Converter;
+			
+			public class DateConverter implements Converter&lt;String, Date&gt; {
+			
+				private String pattern;
+			
+				@Override
+				public Date convert(String source) {
+					if (StringUtils.hasText(source)) {
+						DateFormat dateFormat = new SimpleDateFormat(pattern);
+						dateFormat.setLenient(false);
+						try {
+							return dateFormat.parse(source);
+						} catch (ParseException e) {
+							throw new ConverterCastException(e);
+						}
+					}
+					throw new ConverterCastException("For input : " + source);
+				}
+			
+				public void setPattern(String pattern) {
+					this.pattern = pattern;
+				}
+			
+			}
+			</pre>
+			<span class="fragment-abs">Controller</span>
+			<pre class="brush:java;">
+			@RequestMapping(value = "/register", method = GET)
+			public String registerDate(ModelMap model, Date date) {
+				if (date == null) {
+					model.addAttribute("date", "NULL");
+				} else {
+					DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+					model.addAttribute("date", dateFormat.format(date));
+				}
+				return "result";
+			}
+			</pre>
+			<div>
+			spring mvc 支持标准的 UTC 时间格式, 若时间不是标准的 UTC 格式, 需要对其进行转换, 否则会引发 400 异常。<br>
+			GET /register?date=2015-04-06 --> 2015年04月06日</div>
+		    <span class="fragment">防止 <span style="font-family:Consolas">JSON</span> 数据中文乱码配置示例</span>
+			<pre class="brush:xml;">
+			&lt;!-- 配置HTTP消息转换器 --&gt;
+		    &lt;bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"&gt;
+		      &lt;property name="supportedMediaTypes"&gt;
+		        &lt;list&gt;
+		          &lt;value&gt;text/html;charset=utf-8&lt;/value&gt;
+		          &lt;value&gt;application/json;charset=utf-8&lt;/value&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"&gt;
+		      &lt;property name="messageConverters"&gt;
+		        &lt;list&gt;
+		          &lt;ref bean="stringHttpMessageConverter" /&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<div>或 ：</div>
+			<pre class="brush:xml;">
+			&lt;!-- 配置HTTP消息转换器 --&gt;
+		    &lt;bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"&gt;
+		      &lt;constructor-arg value="utf-8" /&gt;
+		    &lt;/bean&gt;
+		    
+		    &lt;bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"&gt;
+		      &lt;property name="messageConverters"&gt;
+		        &lt;list&gt;
+		          &lt;ref bean="stringHttpMessageConverter" /&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<div>StringHttpMessageConverter 默认采用 ISO-8859-1 字符集, 中文显示成乱码。解决办法是采用 UTF-8、GBK、GB2312 等兼容中文的字符集。</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1i39tIYT" target="_blank">spring-mvc-request-mapping-handler-adapter.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040622" data-title="Spring MVC RequestMappingHandlerAdapter" data-url="http://lychie.github.io/pages/articles/springmvc/15040622.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
