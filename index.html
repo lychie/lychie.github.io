@@ -29,6 +29,15 @@
       <section>
         <div class="item">
           <div class="title">
+            <a class="light" href="pages/articles/springmvc/15040612.html">Spring MVC RequestMappingHandlerMapping</a>
+            <div class="posted-on">2015-04-06</div>
+          </div>
+          <div class="summary">@RequestMapping 用于处理请求与处理方法之间的映射关系。RequestMappingHandlerMapping 负责分发请求, 它自动的查找控制器中所有的 @RequestMapping 注解, 当一个请求到来时, 它决定调用哪个方法来处理这个请求。
+          <br>请求被 MethodAccessInterceptor 截获。可以看到, HandlerInterceptor.preHandle 在处理方法执行前执行, HandlerInterceptor.postHandle 在处理方法执行后执行, 当请求处理完成后执行 HandlerInterceptor.afterCompletion。若 HandlerInterceptor.preHandle 返回 false, 则终止后续逻辑的执行。HandlerInterceptor 的这 3 个方法提供了足够的灵活性来做各种各样预处理和后处理操作 . . . . . .
+          </div>
+        </div>
+        <div class="item">
+          <div class="title">
             <a class="light" href="pages/articles/springmvc/15040510.html">Spring MVC 视图解析器</a>
             <div class="posted-on">2015-04-05</div>
           </div>
