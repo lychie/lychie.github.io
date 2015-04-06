@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC RequestMappingHandlerMapping</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="springmvc,RequestMappingHandlerMapping,HandlerInterceptor"/>
+    <meta name="description" content="springmvc,RequestMappingHandlerMapping,HandlerInterceptor"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC RequestMappingHandlerMapping</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-06</span>
+		      <span id="archive">归档：springmvc</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>@RequestMapping 用于处理请求与处理方法之间的映射关系。RequestMappingHandlerMapping 负责分发请求, 它自动的查找控制器中所有的 @RequestMapping 注解, 当一个请求到来时, 它决定调用哪个方法来处理这个请求。
+			<pre class="brush:xml;">
+			&lt;bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"&gt;
+		      &lt;property name="useSuffixPatternMatch" value="true" /&gt;
+		      &lt;property name="useTrailingSlashMatch" value="true" /&gt;
+		      &lt;property name="interceptors"&gt;
+		        &lt;list&gt;
+		          &lt;bean class="org.lychie.interceptor.MethodAccessInterceptor" /&gt;
+		        &lt;/list&gt;
+		      &lt;/property&gt;
+		    &lt;/bean&gt;
+			</pre>
+			<div>
+			useSuffixPatternMatch 默认为 true, 它允许 url 带后缀, 如 /user/login.html --> /user/login<br>
+			useTrailingSlashMatch 默认为 true, 它允许 url 带斜杠, 如 /user/login/ --> /user/login<br>
+			interceptors 配置拦截器, 要求必须实现 HandlerInterceptor 接口。
+			</div>
+			<pre class="brush:java;">
+			public class MethodAccessInterceptor implements HandlerInterceptor {
+			
+				@Override
+				public boolean preHandle(HttpServletRequest request,
+						HttpServletResponse response, Object handler) throws Exception {
+					System.out.println("---> preHandle");
+					return true;
+				}
+			
+				@Override
+				public void postHandle(HttpServletRequest request, HttpServletResponse response, 
+						Object handler, ModelAndView modelAndView) throws Exception {
+					System.out.println("---> postHandle");
+				}
+			
+				@Override
+				public void afterCompletion(HttpServletRequest request, HttpServletResponse response, 
+						Object handler, Exception ex) throws Exception {
+					System.out.println("---> afterCompletion");
+				}
+				
+			}
+			</pre>
+			<pre class="brush:java;">
+			@RequestMapping(value = "/domain", method = GET)
+			public String domain() {
+				System.out.println("---> handle method");
+				return "domain";
+			}
+			</pre>
+			<div>
+			GET /domain
+			<pre class="brush:html;">
+			---> preHandle
+			---> handle method
+			---> postHandle
+			---> afterCompletion
+			</pre>
+			请求被 MethodAccessInterceptor 截获。可以看到, HandlerInterceptor.preHandle 在处理方法执行前执行, HandlerInterceptor.postHandle 在处理方法执行后执行, 当请求处理完成后执行 HandlerInterceptor.afterCompletion。若 HandlerInterceptor.preHandle 返回 false, 则终止后续逻辑的执行。HandlerInterceptor 的这 3 个方法提供了足够的灵活性来做各种各样预处理和后处理操作。
+			</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1pJ0ZTOJ" target="_blank">spring-mvc-request-mapping-handler-mapping.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040612" data-title="Spring MVC RequestMappingHandlerMapping" data-url="http://lychie.github.io/pages/articles/springmvc/15040612.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
