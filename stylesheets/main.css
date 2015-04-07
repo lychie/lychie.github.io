@@ -364,3 +364,11 @@ a.light:hover {
 	border-bottom: gray 1px solid;
 	font-family: Consolas, Helvetica, Arial, sans-serif;
 }
+
+.num {
+	font-family: Georgia, Consolas, Helvetica, Arial, sans-serif;
+}
+
+.en {
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+}
