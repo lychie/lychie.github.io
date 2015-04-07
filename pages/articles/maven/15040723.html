@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Eclipse Maven 插件安装</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,eclipse,myeclipse,plugin,插件,安装"/>
+    <meta name="description" content="maven,eclipse,myeclipse,plugin,插件,安装"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Eclipse Maven 插件安装</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-07</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment">离线插件</span>
+			<div>
+			到文章最后下载 eclipse-maven-plugin.zip 离线安装包。解压缩到任意目录 ：<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-maven-dir.png">
+			<br>以下用 %maven-plugin% 表示解压缩根目录。如这里的 E:/setup/dev/eclipse/plugins/maven
+			</div>
+			<span class="fragment">安装插件</span>
+			<div>
+			在 eclipse 安装目录新建一个 links 文件夹。<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-links-dir.png">
+			<br>在 links 文件夹内新建一个文本文件, 并重命名为 maven.link。用文本编辑器打开 maven.link 并编辑它 ：<br>
+			<pre class="brush:html">
+			path=E:/setup/dev/eclipse/plugins/maven
+			</pre>
+			path 的值指定到 %maven-plugin%, 保存并关闭。
+			<br>在当前目录下, 找到 eclipse.ini 配置文件, 用文本编辑器打开并编辑它 ：<br>
+			<pre class="brush:xml;">
+			--launcher.XXMaxPermSize
+			256m
+			--launcher.defaultAction
+			openFile
+			-vm
+			E:/setup/dev/java/jdk/bin/javaw.exe
+			-vmargs
+			-Dosgi.requiredJavaVersion=1.6
+			</pre>
+			增加第 5 和第 6 行配置, 将 E:/setup/dev/java/jdk 替换成你本机 jdk 的安装目录即可。保存并关闭。
+			</div>
+			<span class="fragment"><span class="en">eclipse</span> 配置</span>
+			<div>打开 eclipse ( 若 eclipse 已经启动, 重启它 ), Window --> Preferences<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-maven.png">
+			<br>若能看到 Maven 选项卡, 说明插件安装成功。
+			<br>Window --> Preferences -- > Maven --> Installations --> Add...<br>
+			弹出的对话框如下<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-maven-directory.png">
+			<br>点击 Directory... 按钮, 在弹出来对话框中选到你 maven 安装的根路径<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-maven-directory-ok.png">
+			<br>确定, Finish。
+			<br>Window --> Preferences -- > Maven --> User Settings --> Browse...
+			<br>在弹出来对话框中选到你 maven 安装路径下的 conf/settings.xml 文件<br>
+			<img src="../../../images/articles/maven/15040723/eclipse-maven-settings.png">
+			<br>点击 OK, 至此, eclipse maven 插件安装配置完成。
+			</div>
+			<br><span class="fragment">插件下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1o6iLiEA" target="_blank">eclipse-maven-plugin.zip ( for eclipse helios or higher )</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040723" data-title="Eclipse Maven 插件安装" data-url="http://lychie.github.io/pages/articles/maven/15040723.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
