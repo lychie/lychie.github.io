@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven 安装</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,windows,win8,安装"/>
+    <meta name="description" content="maven,windows,win8,安装"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven 安装</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-07</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">Windows 8</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		    </div>
+		    <span class="fragment">版本选择</span>
+			<div><a href="http://maven.apache.org/download.cgi" target="_blank">http://maven.apache.org/download.cgi</a></div>
+			<div><span class="num">1>&nbsp;</span>maven 3.3, 要求 jdk 1.7 或 jdk 1.7+</div>
+			<div><span class="num">2>&nbsp;</span>maven 3.2, 要求 jdk 1.6 或 jdk 1.6+</div>
+			<div><span class="num">3>&nbsp;</span>maven 3.1, 要求 jdk 1.5 或 jdk 1.5+</div>
+			<div><span class="num">4>&nbsp;</span>maven 3.0, 要求 jdk 1.5 或 jdk 1.5+</div>
+		    <span class="fragment">软件安装</span>
+		    <div>以 maven 3.2 为例。下载 <a href="http://mirrors.cnnic.cn/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz" target="_blank">apache-maven-3.2.5-bin.tar.gz</a>, 解压缩即可。<br>
+		    <img src="../../../images/articles/maven/15040720/maven.png">
+		    <br>以下用 %maven% 表示 maven 的安装目录, 如这里的 E:/setup/dev/servers/apache-maven-3.2.5
+		    </div>
+		    <span class="fragment">配置本地仓库路径</span>
+		    <div>打开 %maven%/conf/settings.xml, 并编辑它。</div>
+		    <pre class="brush:xml">
+		    &lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+			          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+			  &lt;!-- localRepository
+			   | The path to the local repository maven will use to store artifacts.
+			   |
+			   | Default: ${user.home}/.m2/repository
+			  &lt;localRepository&gt;/path/to/local/repo&lt;/localRepository&gt;
+			  --&gt;
+			  
+			  &lt;localRepository&gt;F:/dev/repo/mvn-repo&lt;/localRepository&gt;
+			
+			  &lt;!-- interactiveMode
+			   | This will determine whether maven prompts you when it needs input. If set to false,
+			   | maven will use a sensible default value, perhaps based on some other setting, for
+			   | the parameter in question.
+			   |
+			   | Default: true
+			  &lt;interactiveMode&gt;true&lt;/interactiveMode&gt;
+			  --&gt;
+		    </pre>
+		    <div>添加第 11 行配置, 路径即为 maven 本地仓库的位置。</div>
+		    <span class="fragment">配置环境变量</span>
+		    <div>系统 --> 高级系统设置 --> 高级 --> 系统变量 --> 新建系统变量
+		    <br>变量名 ：MAVEN_HOME
+		    <br>变量值 ：E:\setup\dev\servers\apache-maven-3.2.5
+		    <br>添加 maven 变量到 Path
+		    <br>Path = .;%MAVEN_HOME%\bin
+		    </div>
+		    <span class="fragment">验证环境变量</span>
+		    <div>mvn -v 或 mvn -version<br>
+		    <img src="../../../images/articles/maven/15040720/mvn-version.png">
+		    </div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040720" data-title="Maven 安装" data-url="http://lychie.github.io/pages/articles/maven/15040720.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
