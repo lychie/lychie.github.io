@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven 属性参考</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,maven属性,maven变量,maven内置变量,maven隐式变量"/>
+    <meta name="description" content="maven,maven属性,maven变量,maven内置变量,maven隐式变量"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven 属性参考</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-08</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment"><span class="en">${basedir}</span></span>
+		    <div>pom.xml 所在的目录路径。使用示例 ：</div>
+		    <pre class="brush:xml">
+		    &lt;build&gt;
+		      &lt;directory&gt;${basedir}/target&lt;/directory&gt;
+		    &lt;/build&gt;
+		    </pre>
+		    <span class="fragment"><span class="en">${project.*}</span></span>
+		    <div>引用 pom.xml 节点的值。如 ${project.artifactId}、${project.groupId}、${project.version}、${project.name} 等。使用示例 ：</div>
+		    <pre class="brush:xml">
+		    &lt;build&gt;
+		      &lt;finalName&gt;${project.artifactId}-${project.version}&lt;/finalName&gt;
+		    &lt;/build&gt;
+		    </pre>
+		    <span class="fragment"><span class="en">${project.build.*}</span></span>
+		    <div>常见的有 ：</div>
+		    <div><span class="num">1>&nbsp;</span>${project.build.directory} --> target</div>
+		    <div><span class="num">2>&nbsp;</span>${project.build.sourceDirectory} --> src/main/java</div>
+		    <div><span class="num">3>&nbsp;</span>${project.build.testSourceDirectory} --> src/test/java</div>
+		    <div><span class="num">4>&nbsp;</span>${project.build.outputDirectory} --> target/classes</div>
+		    <div><span class="num">5>&nbsp;</span>${project.build.testOutputDirectory} --> target/test-classes</div>
+		    <span class="fragment"><span class="en">${settings.*}</span></span>
+			<div>引用 settings.xml 节点的值。如 ${settings.localRepository} 等。</div>
+			<span class="fragment"><span class="en">${env.*}</span></span>
+			<div>引用环境变量。如 ${env.PATH}、${env.MAVEN_HOME} 等。</div>
+			<span class="fragment"><span class="en">java properties</span></span>
+			<div>与 java.lang.System.getProperty() 等效。如 ${java.version}、${user.home}、${os.name} 等。</div>
+			<span class="fragment"><span class="en">properties</span></span>
+			<pre class="brush:xml;">
+			&lt;properties&gt;
+		      &lt;my.project.name&gt;MyProject&lt;/my.project.name&gt;
+		    &lt;/properties&gt;
+		    
+		    &lt;build&gt;
+		      &lt;finalName&gt;${my.project.name}&lt;/finalName&gt;
+		    &lt;/build&gt;
+			</pre>
+			通过 properties 节点可自定义属性变量。
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15040822" data-title="Maven 属性参考" data-url="http://lychie.github.io/pages/articles/maven/15040822.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
