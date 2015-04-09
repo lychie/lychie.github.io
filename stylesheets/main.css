@@ -372,3 +372,9 @@ a.light:hover {
 .en {
 	font-family: Consolas, Helvetica, Arial, sans-serif;
 }
+
+.code {
+	border: 1px solid #E1E1E8;
+	padding: 2px 5px;
+	background-color: #F8F8FF;
+}
