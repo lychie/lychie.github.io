@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Junit 基本使用</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="junit,junit入门,junit教程,junit使用"/>
+    <meta name="description" content="junit,junit入门,junit教程,junit使用"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Junit 基本使用</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-12</span>
+		      <span id="archive">归档：junit</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Junit 4</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment-abs">pom.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;properties&gt;
+		      &lt;junit.version&gt;4.11&lt;/junit.version&gt;
+		    &lt;/properties&gt;
+		    &lt;dependencies&gt;
+		      &lt;dependency&gt;
+		        &lt;groupId&gt;junit&lt;/groupId&gt;
+		        &lt;artifactId&gt;junit&lt;/artifactId&gt;
+		        &lt;version&gt;${junit.version}&lt;/version&gt;
+		        &lt;scope&gt;test&lt;/scope&gt;
+		      &lt;/dependency&gt;
+		    &lt;/dependencies&gt;
+		    </pre>
+		    <span class="fragment-abs">Junit4 基础注解</span>
+		    <pre class="brush:java;">
+		    public class BasicTest {
+
+				public BasicTest() {
+					System.out.println("---> BasicTest");
+				}
+				
+				@BeforeClass
+				public static void setupBeforeClass() {
+					System.out.println("---> setupBeforeClass");
+				}
+				
+				@AfterClass
+				public static void tearDownAfterClass() {
+					System.out.println("---> tearDownAfterClass");
+				}
+				
+				@Before
+				public void setupBeforeMethod() {
+					System.out.println("---> setupBeforeMethod");
+				}
+				
+				@After
+				public void tearDownAfterMethod() {
+					System.out.println("---> tearDownAfterMethod");
+				}
+				
+				@Test
+				public void testMethod1() {
+					System.out.println("---> testMethod1");
+				}
+				
+				@Test
+				public void testMethod2() {
+					System.out.println("---> testMethod2");
+				}
+				
+			}
+		    </pre>
+		    <div>
+		    <span class="code">mvn clean test</span> 执行结果 ：
+		    </div>
+		    <div class="code">
+		    Running org.lychie.service.BasicTest<br>
+			---> setupBeforeClass<br>
+			---> BasicTest<br>
+			---> setupBeforeMethod<br>
+			---> testMethod1<br>
+			---> tearDownAfterMethod<br>
+			---> BasicTest<br>
+			---> setupBeforeMethod<br>
+			---> testMethod2<br>
+			---> tearDownAfterMethod<br>
+			---> tearDownAfterClass<br>
+			Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.126 sec
+		    </div>
+		    <div>
+		    @BeforeClass 和 @AfterClass 注解标注的方法要求是 public static void 修饰的无参方法。
+		    <br>@BeforeClass 在整个单元测试过程中仅执行一次, 并且是在测试开始之前执行。
+		    <br>@AfterClass 在整个单元测试过程中也仅执行一次, 并且是在测试结束之后执行。
+		    <br>BasicTest 每个测试用例执行时都会新创建一个当前类的实例, 可以从执行结果中看到, BasicTest 的构造器被执行了 2 次。
+		    <br>@Test 测试用例, 由 public void 修饰的无参方法。
+		    <br>@Before 在 @Test 执行之前执行。
+		    <br>@After 在 @Test 执行之后执行。
+		    </div>
+		    <span class="fragment-abs">@Test 测试用例</span>
+		    <pre class="brush:java;">
+		    public class Calculator {
+				
+				public int add(int x, int y) {
+					return x + y;
+				}
+				
+				public double divide(double x, double y) {
+					return x / y;
+				}
+				
+			}
+		    </pre>
+		    <pre class="brush:java;">
+		    public class CalculatorTest {
+			
+				private Calculator calculator;
+				
+				@Before
+				public void setup() {
+					calculator = new Calculator();
+				}
+				
+				@Test(timeout = 10)
+				public void testAdd() {
+					Assert.assertEquals(3, calculator.add(1, 2));
+				}
+				
+				@Test(expected = Throwable.class)
+				public void testDivide() {
+					Assert.assertEquals(0, calculator.divide(1, 0), 0);
+				}
+				
+			}
+		    </pre>
+		    <div>
+		    timeout ：毫秒为单位, 若方法执行完成耗时超出给定的数值, 则视为失败。<br>
+		    expected ：预测方法抛出的异常, 若方法执行过程中没有抛出给定的异常, 则视为失败。<br>
+		    <span class="code">mvn clean test</span> 执行结果 ：
+		    </div>
+		    <div class="code">
+		    Running org.lychie.service.CalculatorTest<br>
+			Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+		    </div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1jGILwXo" target="_blank">junit-basic.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041222" data-title="Junit 基本使用" data-url="http://lychie.github.io/pages/articles/junit/15041222.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
