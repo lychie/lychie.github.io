@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven Resources Plugin</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,org.apache.maven.plugins,maven-resources-plugin,resources插件"/>
+    <meta name="description" content="maven,org.apache.maven.plugins,maven-resources-plugin,resources插件"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven Resources Plugin</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-12</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment-abs">pom.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;build&gt;
+		      &lt;plugins&gt;
+		        &lt;plugin&gt;
+		          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+		          &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+		          &lt;version&gt;2.7&lt;/version&gt;
+		          &lt;executions&gt;
+		            &lt;execution&gt;
+		              &lt;id&gt;copy-resources&lt;/id&gt;
+		              &lt;phase&gt;validate&lt;/phase&gt;
+		              &lt;goals&gt;
+		                &lt;goal&gt;copy-resources&lt;/goal&gt;
+		              &lt;/goals&gt;
+			          &lt;configuration&gt;
+			            &lt;encoding&gt;UTF-8&lt;/encoding&gt;
+			            &lt;resources&gt;
+			              &lt;resource&gt;
+			                &lt;filtering&gt;true&lt;/filtering&gt;
+			                &lt;directory&gt;src/main/webapp/WEB-INF/config&lt;/directory&gt;
+			                &lt;includes&gt;
+			                  &lt;include&gt;**/*.properties&lt;/include&gt;
+			                &lt;/includes&gt;
+			                &lt;excludes&gt;
+			                  &lt;exclude&gt;**/*.txt&lt;/exclude&gt;
+			                &lt;/excludes&gt;
+			              &lt;/resource&gt;
+			            &lt;/resources&gt;
+			            &lt;outputDirectory&gt;target/classes&lt;/outputDirectory&gt;
+			          &lt;/configuration&gt;
+		            &lt;/execution&gt;
+		          &lt;/executions&gt;
+		        &lt;/plugin&gt;
+		      &lt;/plugins&gt;
+		    &lt;/build&gt;
+		    </pre>
+		    <div>配置作用 ：拷贝 src/main/webapp/WEB-INF/config 目录下的资源文件到类路径 target/classes。
+		    <br>当项目资源文件不在 maven 标准目录结构 (参考 ：<a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html" target="_blank">Maven Standard Directory Layout</a>), 可通过以上配置来进行资源文件的拷贝。
+		    <br>phase ：maven 构建的生命周期的阶段 (参考 ：<a href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html" target="_blank">Maven Build Lifecycle</a>)
+		    <br>goal ：可选值 [resources|testResources|copy-resources]
+		    <br>goal resources ：默认拷贝资源文件到  ${project.build.outputDirectory} (参考 ：<a href="http://lychie.github.io/pages/articles/maven/15040822.html" target="_blank">Maven Properties</a>)
+		    <br>goal testResources ：默认拷贝资源文件到 ${project.build.testOutputDirectory} (参考 ：<a href="http://lychie.github.io/pages/articles/maven/15040822.html" target="_blank">Maven Properties</a>)
+		    <br>goal copy-resources ：拷贝资源文件到指定的目录
+		    <br>filtering ：默认为 false。若为 true, 资源文件中可以通过 ${variable} 来引用 maven properties
+		    <br>encoding ：与 filtering=true 一起作用, 指变量替换的字符集编码
+		    <br>directory ：资源文件所在的目录
+		    <br>include ：包含的文件
+		    <br>exclude ：排除的文件
+		    <br>outputDirectory ：拷贝到的目录
+		    <br>下载附件 maven-plugin-resources.zip, 解压缩, 执行 <span class="code">mvn -e clean package</span>
+		    <br>查看 target/maven-plugin-resources-1.0/WEB-INF/classes 目录, 即可见配置作用。
+		    </div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1bn96jTH" target="_blank">maven-plugin-resources.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041214" data-title="Maven Resources Plugin" data-url="http://lychie.github.io/pages/articles/maven/15041214.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
