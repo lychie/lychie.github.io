@@ -29,6 +29,21 @@
       <section>
         <div class="item">
           <div class="title">
+            <a class="light" href="pages/articles/junit/15041222.html">Junit 基本使用</a>
+            <div class="posted-on">2015-04-12</div>
+          </div>
+          <div class="summary">@BeforeClass 和 @AfterClass 注解标注的方法要求是 public static void 修饰的无参方法。
+		    <br>@BeforeClass 在整个单元测试过程中仅执行一次, 并且是在测试开始之前执行。
+		    <br>@AfterClass 在整个单元测试过程中也仅执行一次, 并且是在测试结束之后执行。
+		    <br>BasicTest 每个测试用例执行时都会新创建一个当前类的实例, 可以从执行结果中看到, BasicTest 的构造器被执行了 2 次。
+		    <br>@Test 测试用例, 由 public void 修饰的无参方法。
+		    <br>@Before 在 @Test 执行之前执行。
+		    <br>@After 在 @Test 执行之后执行<br>
+		    timeout ：毫秒为单位, 若方法执行完成耗时超出给定的数值, 则视为失败。<br>
+		    expected ：预测方法抛出的异常, 若方法执行过程中没有抛出给定的异常, 则视为失败 . . .</div>
+        </div>
+        <div class="item">
+          <div class="title">
             <a class="light" href="pages/articles/maven/15041214.html">Maven Resources Plugin</a>
             <div class="posted-on">2015-04-12</div>
           </div>
