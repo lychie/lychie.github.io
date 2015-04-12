@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven Jetty 插件</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,jetty,jetty端口,取消文件锁定,禁止文件锁定,自动部署,热部署,手动重加载,访问日志,webApp上下文,部署多个运用,httpConnector,port,reload,scanIntervalSeconds,dumpOnStart,webApp,contextPath,contextHandlers,requestLog"/>
+    <meta name="description" content="maven,jetty,jetty端口,取消文件锁定,禁止文件锁定,自动部署,热部署,手动重加载,访问日志,webApp上下文,部署多个运用,httpConnector,port,reload,scanIntervalSeconds,dumpOnStart,webApp,contextPath,contextHandlers,requestLog"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven Jetty 插件</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-11</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Jetty 9</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment-abs">pom.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;properties&gt;
+		      &lt;jetty.version&gt;9.2.9.v20150224&lt;/jetty.version&gt;
+		    &lt;/properties&gt;
+		    &lt;build&gt;
+		      &lt;plugins&gt;
+		        &lt;plugin&gt;
+		          &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+		          &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+		          &lt;version&gt;${jetty.version}&lt;/version&gt;
+		        &lt;/plugin&gt;
+		      &lt;/plugins&gt;
+		    &lt;/build&gt;
+		    </pre>
+		    <div>启动 Jetty ：<span class="code">mvn jetty:run</span>, 运用访问地址 ：<span class="code">http://localhost:8080</span>, 停止 Jetty ：<span class="code">Ctrl + C</span>。
+		    </div>
+		    <span class="fragment-abs">取消使用文件缓存</span>
+		    <div>
+		    %repository%/org/eclipse/jetty/jetty-webapp/9.2.9.v20150224/jetty-webapp-9.2.9.v20150224.jar
+		    <br>用压缩工具打开它, 找到 jetty-webapp-9.2.9.v20150224.jar/org/eclipse/jetty/webapp/webdefault.xml
+		    </div>
+		    <pre class="brush:xml;">
+		    &lt;init-param&gt;
+			  &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;
+			  &lt;param-value&gt;true&lt;/param-value&gt;
+			&lt;/init-param&gt;
+		    </pre>
+		    <div>useFileMappedBuffer 默认是开启的, 这样在 jetty 运行期间, 无法修改 js、css 等静态资源文件。将 true 改为 false, 并重新压缩进 jar 包即可。</div>
+			<span class="fragment-abs">端口配置</span>
+			<pre class="brush:xml;">
+		    &lt;configuration&gt;
+		      &lt;httpConnector&gt;
+		        &lt;port&gt;8081&lt;/port&gt;
+		      &lt;/httpConnector&gt;
+		    &lt;/configuration&gt;
+			</pre>
+			<div>默认端口 8080, 命令行方式修改端口的命令 ：<span class="code">mvn -Djetty.port=8081 jetty:run</span></div>
+			<span class="fragment-abs">自动热部署</span>
+			<pre class="brush:xml;">
+		    &lt;configuration&gt;
+		      &lt;scanIntervalSeconds&gt;2&lt;/scanIntervalSeconds&gt;
+		    &lt;/configuration&gt;
+			</pre>
+			<div>默认值为 0。0 表示关闭, 大于 0 表示开启, 单位为秒。以配置的大于 0 的数值为一个周期, 自动的扫描文件检查内容是否有变化, 若有, 则自动重新部署运用。
+			<br>命令行方式 ：<span class="code">mvn -Djetty.scanIntervalSeconds=2 jetty:run</span></div>
+			<span class="fragment-abs">手动重加载</span>
+			<pre class="brush:xml;">
+		    &lt;configuration&gt;
+		      &lt;reload&gt;manual&lt;/reload&gt;
+		    &lt;/configuration&gt;
+			</pre>
+			<div>
+			reload 的可选值 ：[automatic|manual]。默认值为 automatic, 它与大于 0 的 scanIntervalSeconds 一起作用, 自动的扫描文件完成热部署的动作。
+			<br>设为 manual 的好处是, 当你改变文件内容并保存时, 不会触发自动扫描和重部署动作, 你还可以继续的修改, 直至你在 Console 或命令行键入换行键 (Enter) 才触发重新部署的动作。命令行方式 ：<span class="code">mvn -Djetty.reload=manual jetty:run</span>
+			</div>
+			<span class="fragment-abs">记录访问日志</span>
+			<pre class="brush:xml;">
+		    &lt;configuration&gt;
+	          &lt;requestLog implementation="org.eclipse.jetty.server.NCSARequestLog"&gt;
+	            &lt;filename&gt;target/access-yyyy_mm_dd.log&lt;/filename&gt;
+	            &lt;filenameDateFormat&gt;yyyy_MM_dd&lt;/filenameDateFormat&gt;
+	            &lt;logDateFormat&gt;yyyy-MM-dd HH:mm:ss&lt;/logDateFormat&gt;
+	            &lt;logTimeZone&gt;GMT+8:00&lt;/logTimeZone&gt;
+	            &lt;append&gt;true&lt;/append&gt;
+	            &lt;logServer&gt;true&lt;/logServer&gt;
+	            &lt;retainDays&gt;120&lt;/retainDays&gt;
+	            &lt;logCookies&gt;true&lt;/logCookies&gt;
+	          &lt;/requestLog&gt;
+	        &lt;/configuration&gt;
+			</pre>
+			<div>
+			filename ：日志文件名<br>
+			filenameDateFormat ：日志文件名日期格式, 要求日志文件名必须含有 yyyy_mm_dd 串<br>
+			logDateFormat ：日志的时间格式<br>
+			logTimeZone ：时区<br>
+			append ：追加到日志<br>
+			logServer ：记录访问的主机名<br>
+			retainDays ：日志文件保存的天数, 超过删除<br>
+			logCookies ：记录 cookies<br>
+			access-2015_04_11.log 其中的一条记录 ：<br>
+			<div class="code">localhost 0:0:0:0:0:0:0:1 - - [2015-04-11 23:35:49] "GET /domain HTTP/1.1" 200 - "-" "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36 SE 2.X MetaSr 1.0" "JSESSIONID=a4ud8iey80cz1rucrh25dfafy"</div>
+			</div>
+			<span class="fragment-abs">转储快照</span>
+			<pre class="brush:xml;">
+			&lt;configuration&gt;
+		      &lt;dumpOnStart&gt;true&lt;/dumpOnStart&gt;
+		    &lt;/configuration&gt;
+			</pre>
+			<div>
+			dumpOnStart 默认值为 false。如果设为 true, jetty 在启动时将拍摄一份转储快照。
+			</div>
+			<span class="fragment-abs">webApp 上下文</span>
+			<pre class="brush:xml;">
+			&lt;configuration&gt;
+	          &lt;webApp&gt;
+	            &lt;contextPath&gt;/${project.artifactId}&lt;/contextPath&gt;
+	            &lt;tempDirectory&gt;${project.build.outputDirectory}/tmp&lt;/tempDirectory&gt;
+	            &lt;!-- &lt;baseResource&gt;${project.basedir}/src/main/webapp&lt;/baseResource&gt; --&gt;
+	            &lt;resourceBases&gt;
+	              &lt;resourceBase&gt;${project.basedir}/src/main/webapp&lt;/resourceBase&gt;
+	              &lt;resourceBase&gt;${project.basedir}/../res/src/main/webapp&lt;/resourceBase&gt;
+	            &lt;/resourceBases&gt;
+	          &lt;/webApp&gt;
+	        &lt;/configuration&gt;
+			</pre>
+			<div>
+			contextPath ：上下文路径, 默认为 /<br>
+			tempDirectory ：默认值 ${project.build.outputDirectory}/tmp (target/classes/temp), 所有的 jsp 等的转换和编译都放在这个目录<br>
+			baseResource ：静态资源目录, 默认值 ${project.basedir}/src/main/webapp<br>
+			resourceBases ：与 baseResource 相斥, 用于配置多个静态资源目录
+			</div>
+			<span class="fragment-abs">运行多个运用</span>
+			<pre class="brush:xml;">
+			&lt;configuration&gt;
+	          &lt;contextHandlers&gt;
+	            &lt;contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext"&gt;
+	              &lt;resourceBase&gt;${project.basedir}/../res/src/main/webapp&lt;/resourceBase&gt;
+	              &lt;contextPath&gt;/res&lt;/contextPath&gt;
+	            &lt;/contextHandler&gt;
+	          &lt;/contextHandlers&gt;
+	        &lt;/configuration&gt;
+			</pre>
+			<div>在本示例中, res 是一个独立的 project, 它用于为 app 提供静态资源服务, 具体见附件。
+			&lt;resourceBase&gt;${project.basedir}/../res/src/main/webapp&lt;/resourceBase&gt; 引用资源的方式为 ：
+			<br>&lt;link type="text/css" rel="stylesheet" href="styles/main.css" /&gt;
+			<br>以上配置引用资源文件的方式为 ：<br>
+			&lt;link type="text/css" rel="stylesheet" href="/res/styles/main.css" /&gt;
+			</div>
+			<span class="fragment-abs">示例完整配置</span>
+			<pre class="brush:xml;">
+			&lt;build&gt;
+		      &lt;plugins&gt;
+		        &lt;plugin&gt;
+		          &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+		          &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+		          &lt;version&gt;${jetty.version}&lt;/version&gt;
+		          &lt;configuration&gt;
+		            &lt;httpConnector&gt;
+		              &lt;port&gt;8081&lt;/port&gt;
+		            &lt;/httpConnector&gt;
+		            &lt;reload&gt;manual&lt;/reload&gt;
+		            &lt;scanIntervalSeconds&gt;2&lt;/scanIntervalSeconds&gt;
+		            &lt;dumpOnStart&gt;true&lt;/dumpOnStart&gt;
+		            &lt;webApp&gt;
+		              &lt;contextPath&gt;/${project.artifactId}&lt;/contextPath&gt;
+		              &lt;tempDirectory&gt;${project.build.outputDirectory}/tmp&lt;/tempDirectory&gt;
+		              &lt;!-- &lt;baseResource&gt;${project.basedir}/src/main/webapp&lt;/baseResource&gt; --&gt;
+		              &lt;resourceBases&gt;
+		                &lt;resourceBase&gt;${project.basedir}/src/main/webapp&lt;/resourceBase&gt;
+		                &lt;resourceBase&gt;${project.basedir}/../res/src/main/webapp&lt;/resourceBase&gt;
+		              &lt;/resourceBases&gt;
+		            &lt;/webApp&gt;
+		            &lt;contextHandlers&gt;
+		              &lt;contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext"&gt;
+		                &lt;resourceBase&gt;${project.basedir}/../res/src/main/webapp&lt;/resourceBase&gt;
+		                &lt;contextPath&gt;/res&lt;/contextPath&gt;
+		              &lt;/contextHandler&gt;
+		            &lt;/contextHandlers&gt;
+		            &lt;requestLog implementation="org.eclipse.jetty.server.NCSARequestLog"&gt;
+		              &lt;filename&gt;target/access-yyyy_mm_dd.log&lt;/filename&gt;
+		              &lt;filenameDateFormat&gt;yyyy_MM_dd&lt;/filenameDateFormat&gt;
+		              &lt;logDateFormat&gt;yyyy-MM-dd HH:mm:ss&lt;/logDateFormat&gt;
+		              &lt;logTimeZone&gt;GMT+8:00&lt;/logTimeZone&gt;
+		              &lt;append&gt;true&lt;/append&gt;
+		              &lt;logServer&gt;true&lt;/logServer&gt;
+		              &lt;retainDays&gt;120&lt;/retainDays&gt;
+		              &lt;logCookies&gt;true&lt;/logCookies&gt;
+		            &lt;/requestLog&gt;
+		          &lt;/configuration&gt;
+		        &lt;/plugin&gt;
+		      &lt;/plugins&gt;
+		    &lt;/build&gt;
+			</pre>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1gdu4Tyz" target="_blank">jetty-config-demo.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041122" data-title="Maven Jetty 插件" data-url="http://lychie.github.io/pages/articles/maven/15041122.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
