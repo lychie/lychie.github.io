@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Junit TestRule</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="junit,Rule,@Rule,ClassRule,@ClassRule,RuleChain,TestRule"/>
+    <meta name="description" content="junit,Rule,@Rule,ClassRule,@ClassRule,RuleChain,TestRule"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Junit TestRule</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-13</span>
+		      <span id="archive">归档：junit</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Junit 4</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment-abs">TestRule</span>
+		    <pre class="brush:java;">
+		    import org.junit.rules.TestRule;
+			import org.junit.runner.Description;
+			import org.junit.runners.model.Statement;
+			
+			public class LoggerRule implements TestRule {
+			
+				@Override
+				public Statement apply(final Statement base, final Description description) {
+					return new Statement() {
+						@Override
+						public void evaluate() throws Throwable {
+							String method = description.getMethodName();
+							Logger.debug("---> " + method + " run before");
+							base.evaluate();
+							Logger.debug("---> " + method + " run after");
+						}
+					};
+				}
+			
+			}
+		    </pre>
+		    <span class="fragment-abs">@Rule</span>
+		    <pre class="brush:java;">
+		    import org.junit.Rule;
+			import org.junit.Test;
+			import org.junit.rules.TestRule;
+			
+			public class RuleUsageTest {
+			
+				@Rule
+				public TestRule loggerRule = new LoggerRule();
+				
+				@Test
+				public void testMethod() {
+					System.out.println("---> testMethod is running");
+				}
+				
+			}
+		    </pre>
+		    <div>
+		    TestRule 类似于拦截器的作用, 它允许你在测试用例执行前后添加一些额外的操作。@Rule 要求必须为 public 修饰符修饰, 且不能是静态以及类型必须为 TestRule 类型。RuleUsageTest --> Run As JUnit Test 执行结果 ：
+		    </div>
+		    <div class="code">
+		    ---> testMethod run before<br>
+			---> testMethod is running<br>
+			---> testMethod run after
+		    </div>
+		    <div>看起来用 @Before, @After, @BeforeClass, @AfterClass 也可以实现同样的效果。但如果测试有多处需要用到同样的逻辑, 使用 TestRule 可以避免重复编写同样的逻辑代码。</div>
+		    <span class="fragment-abs">@ClassRule</span>
+		    <pre class="brush:java;">
+		    public class ATest {
+			
+				@Test
+				public void testAMethod() {
+					System.out.println("---> testAMethod is running");
+				}
+				
+			}
+		    </pre>
+		    <pre class="brush:java;">
+		    public class BTest {
+			
+				@Test
+				public void testBMethod() {
+					System.out.println("---> testBMethod is running");
+				}
+				
+			}
+		    </pre>
+		    <pre class="brush:java;">
+		    @RunWith(Suite.class)
+			@SuiteClasses({ATest.class, BTest.class})
+			public class CTestSuite {
+			
+				@ClassRule
+				public static TestRule rule = new TestRule() {
+					@Override
+					public Statement apply(final Statement base, Description description) {
+						return new Statement() {
+							@Override
+							public void evaluate() throws Throwable {
+								Logger.debug("---> run junit test before");
+								base.evaluate();
+								Logger.debug("---> run junit test after");
+							}
+						};
+					}
+				};
+				
+			}
+		    </pre>
+		    <div>@ClassRule 要求必须为 public static TestRule 修饰。CTestSuite --> Run As JUnit Test 执行结果 ：		    
+		    </div>
+		    <div class="code">
+		    ---> run junit test before<br>
+			---> testAMethod is running<br>
+			---> testBMethod is running<br>
+			---> run junit test after
+		    </div>
+		    <span class="fragment-abs">RuleChain</span>
+		    <pre class="brush:java;">
+		    import org.junit.Rule;
+			import org.junit.Test;
+			import org.junit.rules.RuleChain;
+			import org.junit.rules.TestRule;
+			import org.junit.runner.Description;
+			import org.junit.runners.model.Statement;
+			
+			public class RuleChainUsageTest {
+			
+				@Rule
+				public TestRule chain = RuleChain.outerRule(new LoggerRule()).around(
+					new TestRule() {
+						@Override
+						public Statement apply(final Statement base, Description description) {
+							return new Statement() {
+								@Override
+								public void evaluate() throws Throwable {
+									System.out.println("------------------------------");
+									base.evaluate();
+									System.out.println("------------------------------");
+								}
+							};
+						}
+					}
+				);
+				
+				@Test
+				public void testMethod() {
+					System.out.println("---> testMethod is running");
+				}
+				
+			}
+		    </pre>
+		    <div>
+		    RuleChainUsageTest --> Run As JUnit Test 执行结果 ：	
+		    </div>
+		    <div class="code">
+		    ---> testMethod run before<br>
+			------------------------------<br>
+			---> testMethod is running<br>
+			------------------------------<br>
+			---> testMethod run after
+		    </div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1sj9JB0D" target="_blank">junit-rule.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041323" data-title="Junit TestRule" data-url="http://lychie.github.io/pages/articles/junit/15041323.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
