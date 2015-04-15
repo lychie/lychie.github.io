@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Junit Assert</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="junit,Assert,断言"/>
+    <meta name="description" content="junit,Assert,断言"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Junit Assert</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-15</span>
+		      <span id="archive">归档：junit</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Junit 4.11</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>
+		    Assert 是 Junit 提供的一套断言机制, 用于检查测试的结果与预期结果是否吻合, 以快速检查开发的代码功能与意图是否匹配。
+		    </div>
+		    <span class="fragment-abs">Basic Usage</span>
+		    <pre class="brush:java;">
+		    import org.junit.Test;
+			import static org.junit.Assert.*;
+			import static org.hamcrest.Matchers.*;
+			
+			public class AssertUsageTest {
+	
+				private static Object obj0 = new String("aa");
+				private static Object obj1 = obj0;
+				private static Object obj2 = obj0;
+				private static Object obj3 = new String("bb");
+				private static int[] array1 = {1, 2, 3, 4, 5};
+				private static int[] array2 = {1, 2, 3, 4, 5};
+				
+				@Test
+				public void testBasicUsage() {
+					
+					/** 断言两个对象 equals */
+					assertEquals(obj1, obj2);
+			
+					/** 断言两个对象不 equals */
+					assertNotEquals(obj2, obj3);
+			
+					/** 断言条件为真 */
+					assertTrue(obj1.toString().length() == 2);
+			
+					/** 断言条件为假 */
+					assertFalse(obj1.toString().length() == 3);
+			
+					/** 断言对象为 null */
+					assertNull(null);
+			
+					/** 断言对象为非 null */
+					assertNotNull(obj1);
+			
+					/** 断言两个变量引用的是同一个对象 */
+					assertSame(obj1, obj2);
+			
+					/** 断言两个变量引用的不是同一个对象 */
+					assertNotSame(obj2, obj3);
+			
+					/** 断言两个数组的元素按索引依次 equals */
+					assertArrayEquals(array1, array2);
+					
+				}
+				
+			}
+		    </pre>
+		    <span class="fragment-abs">assertThat</span>
+		    <div>Assert.assertThat 是 Junit 4.4 开始提供的新的断言语法。Junit 4.4 开始引入了 Hamcrest 匹配机制, Hamcrest 是一个测试的框架，它提供了一套通用的匹配符，可以更加的灵活和准确的设定测试的条件。
+		    <br>例如, 现有 imgUrl = "http://lychie.github.io/images/articles/maven/15040723/eclipse-maven.png", 如果想检查 imgUrl 是以 http 开头, 并且以 .png 结尾的串。Junit 4.4 之前你可能这样做 ：
+		    <pre class="brush:java">
+		    assertTrue(imgUrl.startsWith("http") && imgUrl.endsWith(".png"));
+		    </pre>
+		    现在你可以这样做 ：
+		    <pre class="brush:java">
+		    assertThat(imgUrl, is(allOf(startsWith("http"), endsWith(".png"))));
+		    </pre>
+		    再如, 如果想检查 imgUrl 是以 .png 或 .jpg 结尾的串, JUnit 4.4 之前你可能这样做 ：
+		    <pre class="brush:java">
+		    assertTrue(imgUrl.endsWith(".png") || imgUrl.endsWith(".jpg"));
+		    </pre>
+		    现在你可以这样做 ：
+		    <pre class="brush:java">
+		    assertThat(imgUrl, is(anyOf(endsWith(".png"), endsWith(".jpg"))));
+		    </pre>
+		    Assert.assertThat 可以替代所有其他的断言语句, 并且语义更加清晰, 代码风格也可以得到统一。
+		    </div>
+		    <pre class="brush:java;">
+		    @Test
+			public void testAssertThatUsage() {
+				
+				/**
+				 * 替代 assertEquals
+				 */
+				assertThat(obj1, equalTo(obj2));
+				
+				/**
+				 * 替代 assertEquals
+				 */
+				assertThat(obj1, is(equalTo(obj2)));
+				
+				/**
+				 * 替代 assertNotEquals
+				 */
+				assertThat(obj2, not(obj3));
+				
+				/**
+				 * 替代 assertNotEquals
+				 */
+				assertThat(obj2, not(equalTo(obj3)));
+				
+				/**
+				 * 替代 assertTrue
+				 */
+				assertThat(obj1.toString().length(), is(2));
+				
+				/**
+				 * 替代 assertFalse
+				 */
+				assertThat(obj1.toString().length(), is(not(3)));
+				
+				/**
+				 * 替代 assertNull
+				 */
+				assertThat(null, is(nullValue()));
+				
+				/**
+				 * 替代 assertNotNull
+				 */
+				assertThat(obj1, is(notNullValue()));
+				
+				/**
+				 * 替代 assertSame
+				 */
+				assertThat(obj1, is(sameInstance(obj2)));
+				
+				/**
+				 * 替代 assertNotSame
+				 */
+				assertThat(obj2, is(not(sameInstance(obj3))));
+				
+				/**
+				 * 替代 assertArrayEquals
+				 */
+				assertThat(array1, is(equalTo(array2)));
+				
+			}
+		    </pre>
+		    <div>可以看到 Hamcrest 非常灵活, Matcher 可以嵌套 Matcher, 可以组合出多种不同的测试场景。assertThat 虽然能够替代其他所有的断言语句, 但其他的断言语句也还可以继续使用。   
+		    </div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1o65MgI2" target="_blank">junit-assert.zip</a></div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041520" data-title="Junit Assert" data-url="http://lychie.github.io/pages/articles/junit/15041520.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
