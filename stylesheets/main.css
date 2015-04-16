@@ -378,3 +378,7 @@ a.light:hover {
 	padding: 2px 5px;
 	background-color: #F8F8FF;
 }
+
+#main-content {
+	background: url("images/yc_by_lychie.png") no-repeat right top;
+}
