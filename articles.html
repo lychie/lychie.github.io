@@ -29,6 +29,13 @@
       <section>
         <div class="item">
           <div class="title">
+            <a class="light" href="pages/articles/maven/15041621.html">Maven 远程中央仓库镜像</a>
+            <div class="posted-on">2015-04-16</div>
+          </div>
+          <div class="summary">当我们在 pom.xml 中配置依赖时, 依赖所需的构件, maven 均去本地仓库中取。如果本地仓库还没有所需的构件, maven 会尝试到远程仓库中取回到本地仓库, 然后再从本地仓库中取所需的构件。在这个过程中, 如果 maven 在远程仓库获取不到所需的构件 ( 可能是这些构件不存在, 或者是构件存在但由于网络原因取不回来, 又或者是人为的中途强制终止了等待 ), 那么构建就会失败, 项目会报错 ( 通常是报 artifactId 的错 )。这个时候, 你应该去本地仓库中, 找到这些构件所在的目录, 然后删除这些目录, 再重新构建, 如果顺利, 也许构建会成功。配置镜像通常是为了提高获取构件的速率, 镜像往往能提供比中央仓库更快的服务 ( 通常选择地理位置上与自己较近的镜像 ), 从而提高下载速度, 最终达到提高构建效率的目的 . . .</div>
+        </div>
+        <div class="item">
+          <div class="title">
             <a class="light" href="pages/articles/junit/15041523.html">Junit @Ignore</a>
             <div class="posted-on">2015-04-15</div>
           </div>
