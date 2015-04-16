@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven 远程中央仓库镜像</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie,lychie fan,Lychie Fan,范忠云"/>
+    <meta name="keywords" content="maven,maven repositories,maven repositorie,maven super pom,maven 仓库,maven 中央仓库,mirrors,mirror,mirrorOf,maven 镜像,代理"/>
+    <meta name="description" content="maven,maven repositories,maven repositorie,maven super pom,maven 仓库,maven 中央仓库,mirrors,mirror,mirrorOf,maven 镜像,代理"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven 远程中央仓库镜像</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-16</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">Windows 8</span>
+		      <span class="items">Maven 3.2.5</span>
+		    </div>
+		    <div>当我们在 pom.xml 中配置依赖时, 依赖所需的构件, maven 均去本地仓库中取。如果本地仓库还没有所需的构件, maven 会尝试到远程仓库中取回到本地仓库, 然后再从本地仓库中取所需的构件。在这个过程中, 如果 maven 在远程仓库获取不到所需的构件 ( 可能是这些构件不存在, 或者是构件存在但由于网络原因取不回来, 又或者是人为的中途强制终止了等待 ), 那么构建就会失败, 项目会报错 ( 通常是报 artifactId 的错 )。这个时候, 你应该去本地仓库中, 找到这些构件所在的目录, 然后删除这些目录, 再重新构建, 如果顺利, 也许构建会成功。</div>
+			<div>上面提到过的远程仓库, maven 默认使用的服务地址是 https://repo.maven.apache.org/maven2, 你可以在 maven 的 super pom.xml 中找到它。实质上, 它使用的镜像地址是 http://repo1.maven.org/maven2。</div>
+			<span class="fragment-abs">maven super pom.xml</span>
+			<pre class="brush:xml;">
+			. . .
+			&lt;repositories&gt;
+		      &lt;repository&gt;
+		        &lt;id&gt;central&lt;/id&gt;
+		        &lt;name&gt;Central Repository&lt;/name&gt;
+		        &lt;url&gt;https://repo.maven.apache.org/maven2&lt;/url&gt;
+		        &lt;layout&gt;default&lt;/layout&gt;
+		        &lt;snapshots&gt;
+		          &lt;enabled&gt;false&lt;/enabled&gt;
+		        &lt;/snapshots&gt;
+		      &lt;/repository&gt;
+		    &lt;/repositories&gt;
+			. . .
+			</pre>
+			<div>具体位置是 ：%MAVEN_HOME%\lib\maven-settings-builder-3.2.5.jar\org\apache\maven\model\pom-4.0.0.xml
+			<br>它类似于 Java 中的 Object 类, 所有的 pom.xml 都隐式的继承自它。你可以通过执行 <span class="code">mvn help:effective-pom</span> 命令来查看有效的 pom 配置信息。
+			</div>
+			<span class="fragment-abs">远程中央仓库镜像地址列表</span>
+		    <p class="text" style="margin-top:-4px;">
+			  <table class="bordered">
+				<thead>
+				  <tr>
+				  	<th width="45%">Location</th>
+					<th width="55%">URL</th>
+				  </tr>
+				 </thead>
+				 <tr>
+				   <td>United States, California ( 美国加利福尼亚 )</td>
+				   <td>http://repo1.maven.org/maven2</td>
+				 </tr>
+				 <tr>
+				   <td>United Kingdom ( 英国 )</td>
+				   <td>http://uk.maven.org/maven2</td>
+				 </tr>
+				 <tr>
+				   <td>United States, North Carolina ( 美国北卡罗莱纳州 )</td>
+				   <td>http://mirrors.ibiblio.org/pub/mirrors/maven2</td>
+				 </tr>
+				 <tr>
+				   <td>France ( 法国 )</td>
+				   <td>http://maven.antelink.com/content/repositories/central</td>
+				 </tr>
+				 <tr>
+				   <td>&nbsp;</td>
+				   <td>http://maven.tmatesoft.com/content/groups/public</td>
+				 </tr>
+			  </table>
+			</p>
+			<span class="fragment-abs">settings.xml 配置远程仓库镜像</span>
+			<pre class="brush:xml;">
+			&lt;mirrors&gt;
+		      &lt;mirror&gt;
+			    &lt;id&gt;ibiblio.org&lt;/id&gt;
+			    &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+			    &lt;name&gt;mirrors repositories from central&lt;/name&gt;
+			    &lt;url&gt;http://mirrors.ibiblio.org/pub/mirrors/maven2&lt;/url&gt;
+		      &lt;/mirror&gt;
+		    &lt;/mirrors&gt;
+			</pre>
+			<div>配置镜像通常是为了提高获取构件的速率, 镜像往往能提供比中央仓库更快的服务 ( 通常选择地理位置上与自己较近的镜像 ), 从而提高下载速度, 最终达到提高构建效率的目的。你可以在这里配置多个镜像, 值得一提的是, 只有当 mirrorOf 与 repository id 匹配时 ( 参考上面的 maven super pom.xml ), 该镜像才会起作用。一个镜像可以处理多个库 ：<br>
+			&lt;mirrorOf&gt;*&lt;/mirrorOf&gt; 能匹配所有的 repository id<br>
+			&lt;mirrorOf&gt;repo1,repo2&lt;/mirrorOf&gt; 匹配 repo1 或 repo2 库<br>
+			&lt;mirrorOf&gt;external:*&lt;/mirrorOf&gt; 匹配除本地仓库之外的所有库<br>
+			&lt;mirrorOf&gt;*,!repo1&lt;/mirrorOf&gt; 匹配除 repo1 之外的所有库<br>
+			当一个库匹配到多个镜像时, maven 优先选择与库 id 完全匹配的镜像, 若没有, 则按照镜像配置的先后顺序取第一个。
+			</div>
+			<p>&nbsp;</p>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041621" data-title="Maven 远程中央仓库镜像" data-url="http://lychie.github.io/pages/articles/maven/15041621.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
