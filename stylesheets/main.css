@@ -379,6 +379,18 @@ a.light:hover {
 	background-color: #F8F8FF;
 }
 
+.precode {
+	color: white;
+	margin: 5px 0;
+	border: 1px solid #111;
+	padding: 2px 5px;
+	background-color: #222;
+}
+
 #main-content {
 	background: url("images/yc_by_lychie.png") no-repeat right top;
+}
+
+a#fancy img{
+	margin-top: 5px;
 }
