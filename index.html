@@ -29,6 +29,13 @@
       <section>
         <div class="item">
           <div class="title">
+            <a class="light" href="pages/articles/maven/15041904.html">Maven 多模块项目依赖管理</a>
+            <div class="posted-on">2015-04-19</div>
+          </div>
+          <div class="summary">这是父模块 kitty-parent 的配置片段, 以上声明依赖的方式与以往稍有不同, 上面用了 dependencyManagement 节点, 这样配置完成之后, 实质上, 子模块不会引入任何的构件依赖, 这样做只是为了让子模块能够继承得到这些配置, 这样做的好处是, 在子模块中只需要声明 groupId 和 artifactId 就能准确无误的获取得到依赖的构件。可以想象的到, 这样一来, 不仅能够使子模块配置依赖变得简单, 还能使项目范围内所有依赖的构件的版本能够得到统一, 而且还能在父模块中统一的来管理, 这样就不会发生在多个子模块项目中使用构件的版本不一致的问题 . . .</div>
+        </div>
+        <div class="item">
+          <div class="title">
             <a class="light" href="pages/articles/maven/15041901.html">Maven 多模块项目</a>
             <div class="posted-on">2015-04-19</div>
           </div>
