@@ -1,0 +1,438 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Nexus 搭建 Maven 私服</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie,lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script src="../../../plugins/anchor/jquery.anchor.js"></script>
+    <script src="../../../plugins/anchor/anchor.js"></script>
+    <script src="../../../plugins/fancybox/js/jquery.fancybox-1.3.4.js"></script>
+    <link href="../../../plugins/fancybox/css/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen" />
+    <script>
+      $(document).ready(function() {
+	    $("a#fancy").fancybox({
+		    'overlayShow':false,
+		    'transitionIn':'elastic',
+		    'transitionOut':'elastic'
+	    });
+      });
+    </script>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Nexus 搭建 Maven 私服</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-18</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">Windows 8</span>
+		      <span class="items">Maven 3.2.5</span>
+		      <span class="items">Nexus 2.11.0</span>
+		    </div>
+		    <span class="fragment">版本选择</span>
+		    <div>
+		    <a href="http://www.sonatype.org/nexus/archived" target="_blank" title="nexus 版本列表">http://www.sonatype.org/nexus/archived</a><br>
+		    nexus 2.6 及 2.6+ 版本要求 jdk 1.7 或 1.7+ 版本。根据你现有的环境来选择合适的版本。这里选择 <a href="https://sonatype-download.global.ssl.fastly.net/nexus/oss/nexus-2.11.0-bundle.zip" target="_blank" title="点击下载">nexus-2.11.0</a> ( 如果无法打开下载, 可将新开标签页地址栏中的地址复制到迅雷等进行下载 )。下载得到 nexus-2.11.0-bundle.zip 压缩包。解压缩里面的 nexus-2.11.0-02 目录, 如我的 E:\setup\dev\servers\nexus\2.11.0, 最终得到的目录结构为 E:\setup\dev\servers\nexus\2.11.0\nexus-2.11.0-02。
+		    </div>
+		    <span class="fragment">配置 <span class="en">nexus</span> 环境</span>
+		    <div>
+		    <div><span class="code">NEXUS_HOME = E:\setup\dev\servers\nexus\2.11.0\nexus-2.11.0-02</span></div>
+		    <div><span class="code">Path = .;%NEXUS_HOME%\bin</span></div>
+		    </div>
+		    <span class="fragment">安装 <span class="en">nexus</span> 服务</span>
+		    <div>在命令行中执行 <span class="code">nexus install</span> ( 必须以管理员身份运行 cmd, 以下同。win8 以管理员身份运行 cmd 的组合键为 ctrl + x 然后按 a )</div>
+		    <div class="precode">
+		    C:\WINDOWS\system32>nexus install<br>
+			wrapper  | nexus installed.
+		    </div>
+		    <span class="fragment">启动 <span class="en">nexus</span></span>
+		    <div>在命令行中执行 <span class="code">nexus start</span></div>
+		    <div class="precode">
+		    C:\WINDOWS\system32>nexus start<br>
+			wrapper  | Starting the nexus service...<br>
+			wrapper  | Waiting to start...<br>
+			wrapper  | Waiting to start...<br>
+			wrapper  | Waiting to start...<br>
+			wrapper  | Waiting to start...<br>
+			wrapper  | nexus started.
+		    </div>
+		    <div>访问入口地址 ：<a href="http://localhost:8081/nexus" target="_blank">http://localhost:8081/nexus</a></div>
+		    <div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_b.png"><img src="../../../images/articles/maven/15041809/nexus_s.png" title="查看图片"></a></div>
+		    <span class="fragment">登录 <span class="en">nexus</span></span>
+		    <div>默认的管理员账号为 admin, 密码为 admin123</div>
+		    <span class="fragment">停止 <span class="en">nexus</span></span>
+		    <div>在命令行中执行 <span class="code">nexus stop</span></div>
+		    <div class="precode">
+		    C:\WINDOWS\system32>nexus stop<br>
+			wrapper  | Stopping the nexus service...<br>
+			wrapper  | Waiting to stop...<br>
+			wrapper  | nexus stopped.
+		    </div>
+		    <span class="fragment">修改 <span class="en">nexus</span> 账号密码</span>
+		    <div>先停止 nexus, 打开 %NEXUS_HOME%\sonatype-work\nexus\conf\security.xml, 修改即可。nexus 的密码采用 SHA1 加密算法 ( <a href="http://www.yiten.net/baidumd5/Default.aspx" target="_blank">在线加密工具</a> ), 将加密后的 SHA1 串拷贝覆盖原来的即可。</div>
+		    <pre class="brush:xml;">
+		    &lt;user&gt;
+		      &lt;id&gt;admin&lt;/id&gt;
+		      &lt;firstName&gt;Administrator&lt;/firstName&gt;
+		      &lt;lastName&gt;User&lt;/lastName&gt;
+		      &lt;password&gt;2899441143e28aee7287e8da3d7211258f5edbd3&lt;/password&gt;
+		      &lt;status&gt;active&lt;/status&gt;
+		      &lt;email&gt;lychie@yeah.net&lt;/email&gt;
+		    &lt;/user&gt;
+		    </pre>
+		    <span class="fragment">修改 <span class="en">nexus</span> 端口</span>
+		    <div>打开 %NEXUS_HOME%\nexus-2.11.0-02\conf\nexus.properties, 修改 application-port 即可。</div>
+		    <pre class="brush:xml;">
+		    application-port=8082
+		    application-host=0.0.0.0
+			nexus-webapp=${bundleBasedir}/nexus
+			nexus-webapp-context-path=/nexus
+		    </pre>
+		    <span class="fragment"><span class="en">nexus</span> 仓库</span>
+		    <div>打开 Views/Repositories 视图如下 ：</div>
+		    <div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_repo_b.png"><img src="../../../images/articles/maven/15041809/nexus_repo_s.png" title="查看图片"></a></div>
+			<div>
+			nexus 仓库分为 4 种, group ( 仓库组 )、hosted ( 本地仓库 )、proxy ( 代理仓库 )、virtual ( 虚拟仓库 )。
+			<br>我们自己开发的构件通常是发布到 hosted 仓库, proxy 用来代理远程的公共仓库, 一个 group 可以包含多个 hosted/proxy 仓库。
+			</div>
+			<span class="fragment">配置仓库组</span>
+			<div>
+			Repositories --> Public Repositories --> Configuration
+			</div>
+			<div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_group_b.png"><img src="../../../images/articles/maven/15041809/nexus_group_s.png" title="查看图片"></a></div>
+			<div>左边是组仓库, 右边是当前可用的仓库, 从右边挑选你想要加入到组的仓库, 点击 Save 保存即可。仓库组中仓库的顺序是有用的, 它决定了 maven 获取构件时遍历 nexus 仓库的顺序。</div>
+		    <span class="fragment"><span class="en">maven settings.xml</span> 配置</span>
+		    <pre class="brush:xml;">
+		    &lt;servers&gt;
+		      &lt;server&gt;
+		        &lt;id&gt;nexus-releases&lt;/id&gt;
+		        &lt;username&gt;deployment&lt;/username&gt;
+		        &lt;password&gt;deployment&lt;/password&gt;
+		      &lt;/server&gt;
+		      &lt;server&gt;
+		        &lt;id&gt;nexus-snapshots&lt;/id&gt;
+		        &lt;username&gt;deployment&lt;/username&gt;
+		        &lt;password&gt;deployment&lt;/password&gt;
+		      &lt;/server&gt;
+		      &lt;server&gt;
+		        &lt;id&gt;nexus-thirdparty&lt;/id&gt;
+		        &lt;username&gt;deployment&lt;/username&gt;
+		        &lt;password&gt;deployment&lt;/password&gt;
+		      &lt;/server&gt;
+		    &lt;/servers&gt;
+
+		    &lt;mirrors&gt;
+		      &lt;mirror&gt;
+			    &lt;id&gt;nexus&lt;/id&gt;
+			    &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;
+			    &lt;name&gt;nexus public repositories&lt;/name&gt;
+			    &lt;url&gt;http://127.0.0.1:8081/nexus/content/groups/public/&lt;/url&gt;
+			  &lt;/mirror&gt;
+		    &lt;/mirrors&gt;
+		    
+		    &lt;profiles&gt;
+		      &lt;profile&gt;
+			    &lt;id&gt;development&lt;/id&gt;
+			    &lt;activation&gt;
+			      &lt;jdk&gt;1.7&lt;/jdk&gt;
+				  &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+			    &lt;/activation&gt;
+			    &lt;properties&gt;
+			      &lt;maven.compiler.source&gt;1.7&lt;/maven.compiler.source&gt;
+				  &lt;maven.compiler.target&gt;1.7&lt;/maven.compiler.target&gt;
+				  &lt;maven.compiler.compilerVersion&gt;1.7&lt;/maven.compiler.compilerVersion&gt;
+			    &lt;/properties&gt;
+			    &lt;repositories&gt;
+			      &lt;repository&gt;
+				    &lt;id&gt;central&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/central&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/repository&gt;
+			      &lt;repository&gt;
+				    &lt;id&gt;nexus-thirdparty&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/thirdparty&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/repository&gt;
+			      &lt;repository&gt;
+				    &lt;id&gt;nexus-releases&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/releases&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/repository&gt;
+			      &lt;repository&gt;
+				    &lt;id&gt;nexus-snapshots&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/snapshots&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/repository&gt;
+			    &lt;/repositories&gt;
+			    &lt;pluginRepositories&gt;
+			      &lt;pluginRepository&gt;
+				    &lt;id&gt;central&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/central&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/pluginRepository&gt;
+			      &lt;pluginRepository&gt;
+				    &lt;id&gt;nexus-thirdparty&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/thirdparty&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/pluginRepository&gt;
+			      &lt;pluginRepository&gt;
+				    &lt;id&gt;nexus-releases&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/releases&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;false&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/pluginRepository&gt;
+			      &lt;pluginRepository&gt;
+				    &lt;id&gt;nexus-snapshots&lt;/id&gt;
+				    &lt;url&gt;http://127.0.0.1:8081/nexus/content/repositories/snapshots&lt;/url&gt;
+				    &lt;releases&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+			        &lt;/releases&gt;
+				    &lt;snapshots&gt;
+				      &lt;enabled&gt;true&lt;/enabled&gt;
+				    &lt;/snapshots&gt;
+				  &lt;/pluginRepository&gt;
+			    &lt;/pluginRepositories&gt;
+			  &lt;/profile&gt;
+		    &lt;/profiles&gt;
+		    </pre>
+		    <div>配置稍微有点长, 请稍安勿躁。<br>
+		    &lt;server&gt; 配置服务器的账户密码, 主要用于发布构件时进行权限的认证。server 的 id 必须与 repository 的 id 一致 ( 参考第3和第62行配置 ), 否则发布构件的时候会报 401, ReasonPhrase: Unauthorized。username 和 password 必须与 nexus 中已有的账户密码一致, 否则发布构件的时候一样会报 401 错误。
+		    <br>&lt;mirror&gt; 镜像配置, 具体用法参考 <a href="http://lychie.github.io/pages/articles/maven/15041621.html" target="_blank">maven 镜像配置</a>, 镜像地址配到 nexus 仓库组的地址 http://127.0.0.1:8081/nexus/content/groups/public。所有 maven 构件的请求, 均由该镜像来代理。
+		    <br>&lt;profile&gt; 在 <a href="http://lychie.github.io/pages/articles/maven/15040801.html" target="_blank">Maven JDK 配置</a> 中介绍了一小部分, 这里不再赘述。repository 配置使用的仓库, 这里配置了 4 个。<a href="#refer" class="goDown">点击参考这里</a>
+		    <br>至此, 配置完成, 下面来介绍下如何发布自己的构件到 nexus 仓库。
+		    </div>
+		    <span class="fragment">发布构件到 <span class="en">nexus</span> 仓库</span>
+		    <pre class="brush:xml;">
+		    &lt;project&gt;
+			  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+			  &lt;groupId&gt;org.lychie&lt;/groupId&gt;
+			  &lt;artifactId&gt;myapp&lt;/artifactId&gt;
+			  &lt;version&gt;1.0.0&lt;/version&gt;
+			  &lt;packaging&gt;jar&lt;/packaging&gt;
+			  &lt;name&gt;myapp&lt;/name&gt;
+			  &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+			  &lt;dependencies&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;junit&lt;/groupId&gt;
+			      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+			      &lt;version&gt;4.11&lt;/version&gt;
+			      &lt;scope&gt;test&lt;/scope&gt;
+			    &lt;/dependency&gt;
+			  &lt;/dependencies&gt;
+			  &lt;distributionManagement&gt;
+			    &lt;repository&gt;
+			      &lt;id&gt;nexus-releases&lt;/id&gt;
+			      &lt;url&gt;http://localhost:8081/nexus/content/repositories/releases&lt;/url&gt;
+			    &lt;/repository&gt;
+			  &lt;/distributionManagement&gt;
+			&lt;/project&gt;
+		    </pre>
+		    <div>主要配置在第17到22行。配置好仓库 id 和 仓库地址, 在命令行执行发布命令 <span class="code">mvn clean deploy</span></div>
+		    <div class="precode">
+		    F:\dev\workspace\eclipse\ee\luna\myapp>mvn deploy<br>
+			[INFO] Scanning for projects...<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] Building myapp 1.0.0<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] --- maven-install-plugin:2.4:install (default-install) @ myapp ---<br>
+			[INFO] Installing F:\dev\workspace\eclipse\ee\luna\myapp\target\myapp-1.0.0.jar to F:\dev\repo\maven2\org\lychie\myapp\1.0.0\myapp-1.0.0.jar<br>
+			[INFO] Installing F:\dev\workspace\eclipse\ee\luna\myapp\pom.xml to F:\dev\repo\maven2\org\lychie\myapp\1.0.0\myapp-1.0.0.pom<br>
+			[INFO] --- maven-deploy-plugin:2.7:deploy (default-deploy) @ myapp ---<br>
+			Uploading: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.0/myapp-1.0.0.jar<br>
+			Uploaded: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.0/myapp-1.0.0.jar (3 KB at 6.9 KB/sec)<br>
+			Uploading: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.0/myapp-1.0.0.pom<br>
+			Uploaded: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.0/myapp-1.0.0.pom (822 B at 5.4 KB/sec)<br>
+			Downloading: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml<br>
+			Uploading: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml<br>
+			Uploaded: http://localhost:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml (295 B at 1.8 KB/sec)<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] BUILD SUCCESS<br>
+			[INFO] ------------------------------------------------------------------------
+		    </div>
+		    <div>到 nexus 查看发布结果, Repositories --> Releases --> Browse Index</div>
+			<div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_release_b.png"><img src="../../../images/articles/maven/15041809/nexus_release_s.png" title="查看图片"></a></div>
+			<div>至此, 我们自己开发的 jar 已经发布到 nexus 仓库, 下面来介绍如何使用这个构件。</div>
+			<span class="fragment">使用 <span class="en">nexus</span> 仓库中的构件</span>
+			<pre class="brush:xml;">
+			&lt;dependencies&gt;
+		      &lt;dependency&gt;
+		        &lt;groupId&gt;org.lychie&lt;/groupId&gt;
+		        &lt;artifactId&gt;myapp&lt;/artifactId&gt;
+		        &lt;version&gt;1.0.0&lt;/version&gt;
+		      &lt;/dependency&gt;
+		    &lt;/dependencies&gt;
+			</pre>
+			<div>在命令行执行编译命令 <span class="code">mvn compile</span></div>
+			<div class="precode">
+			F:\dev\workspace\eclipse\ee\luna\myapps>mvn compile<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] Building myapps 0.0.1-SNAPSHOT<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/groups/public/org/lychie/myapp/1.0.0/myapp-1.0.0.pom<br>
+			Downloaded: http://127.0.0.1:8081/nexus/content/groups/public/org/lychie/myapp/1.0.0/myapp-1.0.0.pom (822 B at 3.1 KB/sec)<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/groups/public/org/lychie/myapp/1.0.0/myapp-1.0.0.jar<br>
+			Downloaded: http://127.0.0.1:8081/nexus/content/groups/public/org/lychie/myapp/1.0.0/myapp-1.0.0.jar (3 KB at 85.1 KB/sec)<br>
+			[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ myapps ---<br>
+			[INFO] Changes detected - recompiling the module!<br>
+			[INFO] Compiling 1 source file to F:\dev\workspace\eclipse\ee\luna\myapps\target\classes<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] BUILD SUCCESS<br>
+			[INFO] ------------------------------------------------------------------------
+			</div>
+			<div>可以看到, maven 是从 nexus 的仓库组中请求所需的构件。</div>
+			<div id="refer">接着我们来做这样的一个试验 ：将 maven settings.xml 配置文件中的 mirror 配置注释掉, 删除本地仓库的 org/lychie 目录, 重新执行编译命令
+			<br><span class="code">mvn compile</span></div>
+			<div class="precode">
+			F:\dev\workspace\eclipse\ee\luna\myapps>mvn clean compile<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] Building myapps 0.0.1-SNAPSHOT<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">central</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.pom<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">thirdparty</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.pom<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">releases</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.pom<br>
+			Downloaded: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">releases</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.pom (923 B at 33.4 KB/sec)<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">central</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.jar<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">thirdparty</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.jar<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">releases</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.jar<br>
+			Downloaded: http://127.0.0.1:8081/nexus/content/repositories/<span style="color:#6495ED">releases</span>/org/lychie/myapp/1.0.0/myapp-1.0.0.jar (3 KB at 53.5 KB/sec)<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] BUILD SUCCESS<br>
+			[INFO] ------------------------------------------------------------------------
+			</div>
+			<div>可以看到, 去掉代理以后, maven 首先到 central 仓库请求构件, 发现没有; 接着去 thirdparty 仓库请求, 发现也没有; 然后去 releases 仓库中请求, 发现有这个构件并进行了下载。而这里 maven 请求构件的顺序正是我们在 settings.xml 中配置的 repository 的先后顺序。</div>
+			<span class="fragment">发布第三方构件到 <span class="en">nexus</span> 仓库</span>
+			<div>
+			首先准备好你的 jar 包, 如这里的 D:/dev/share/myapp-1.0.1.jar
+			1> 命令行的方式<br>
+			在命令行执行发布命令 <span class="code">mvn deploy:deploy-file -DgroupId=org.lychie -DartifactId=myapp -Dversion=1.0.1 -Dpackaging=jar -Dfile=myapp-1.0.1.jar -Durl=http://127.0.0.1:8081/nexus/content/repositories/releases -DrepositoryId=nexus-releases</span>
+			</div>
+			<div class="precode">
+			F:\dev\share>mvn deploy:deploy-file -DgroupId=org.lychie -DartifactId=myapp -Dversion=1.0.1 -Dpackaging=jar -Dfile=myapp-1.0.1.jar -Durl=http://127.0.0.1:8081/nexus/content/repositories/releases -DrepositoryId=nexus-releases<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] Building Maven Stub Project (No POM) 1<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			Uploading: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.1/myapp-1.0.1.jar<br>
+			Uploaded: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.1/myapp-1.0.1.jar (3 KB at 5.0 KB/sec)<br>
+			Uploading: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.1/myapp-1.0.1.pom<br>
+			Uploaded: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/1.0.1/myapp-1.0.1.pom (388 B at 5.3 KB/sec)<br>
+			Downloading: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml<br>
+			Downloaded: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml (295 B at 6.1 KB/sec)<br>
+			Uploading: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml<br>
+			Uploaded: http://127.0.0.1:8081/nexus/content/repositories/releases/org/lychie/myapp/maven-metadata.xml (326 B at 2.4 KB/sec)<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] BUILD SUCCESS<br>
+			[INFO] ------------------------------------------------------------------------
+			</div>
+			<div>
+			2> 可视化界面<br>
+			<div>Repositories --> Releases --> Artifact Upload</div>
+			<div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_deploy_b.png"><img src="../../../images/articles/maven/15041809/nexus_deploy_s.png" title="查看图片"></a></div>
+			点击左侧的 Artifact, 再点击正下方的 Upload Artifact(s), 即可。
+			<br>查看发布结果, Repositories --> Releases --> Browse Index ：
+			</div>
+			<div><a id="fancy" href="../../../images/articles/maven/15041809/nexus_deploy_v_b.png"><img src="../../../images/articles/maven/15041809/nexus_deploy_v_s.png" title="查看图片"></a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<!-- 多说评论 -->
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041809" data-title="Nexus 搭建 Maven 私服" data-url="http://lychie.github.io/pages/articles/maven/15041809.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
