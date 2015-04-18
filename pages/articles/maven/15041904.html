@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven 多模块项目依赖管理</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie,lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li class='last'><a href='../../../classlib.html'>类 库</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven 多模块项目依赖管理</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-19</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>继 <a href="http://lychie.github.io/pages/articles/maven/15041901.html" target="_blank">Maven 多模块项目</a> 一文, 下面介绍在多模块项目中, 如何管理项目的依赖。</div>
+		    <span class="fragment en">dependencyManagement</span>
+		    <pre class="brush:xml;">
+		    &lt;project&gt;
+		      [. . .]
+			  &lt;artifactId&gt;kitty-parent&lt;/artifactId&gt;
+			  &lt;modules&gt;
+			    &lt;module&gt;kitty-app&lt;/module&gt;
+			    &lt;module&gt;kitty-core&lt;/module&gt;
+			  &lt;/modules&gt;
+			  &lt;dependencyManagement&gt;
+			    &lt;dependencies&gt;
+			      &lt;dependency&gt;
+			        &lt;groupId&gt;junit&lt;/groupId&gt;
+			        &lt;artifactId&gt;junit&lt;/artifactId&gt;
+			        &lt;version&gt;${junit.version}&lt;/version&gt;
+			        &lt;scope&gt;test&lt;/scope&gt;
+			      &lt;/dependency&gt;
+			      &lt;dependency&gt;
+			        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+			        &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+			        &lt;version&gt;${servlet.version}&lt;/version&gt;
+			        &lt;scope&gt;provided&lt;/scope&gt;
+			      &lt;/dependency&gt;
+			    &lt;/dependencies&gt;
+			  &lt;/dependencyManagement&gt;
+		      [. . .]
+			&lt;/project&gt;
+		    </pre>
+			<div>这是父模块 kitty-parent 的配置片段, 以上声明依赖的方式与以往稍有不同, 上面用了 &lt;dependencyManagement&gt; 节点, 这样配置完成之后, 实质上, 子模块不会引入任何的构件依赖, 这样做只是为了让子模块能够继承得到这些配置, 这样做的好处是, 在子模块中只需要声明 groupId 和 artifactId 就能准确无误的获取得到依赖的构件。可以想象的到, 这样一来, 不仅能够使子模块配置依赖变得简单, 还能使项目范围内所有依赖的构件的版本能够得到统一, 而且还能在父模块中统一的来管理, 这样就不会发生在多个子模块项目中使用构件的版本不一致的问题。</div>
+			<span class="fragment en">pluginManagement</span>
+		    <pre class="brush:xml;">
+		    &lt;project&gt;
+		      [. . .]
+			  &lt;artifactId&gt;kitty-parent&lt;/artifactId&gt;
+			  &lt;modules&gt;
+			    &lt;module&gt;kitty-app&lt;/module&gt;
+			    &lt;module&gt;kitty-core&lt;/module&gt;
+			  &lt;/modules&gt;
+			  &lt;build&gt;
+			    &lt;pluginManagement&gt;
+			      &lt;plugins&gt;
+			        &lt;plugin&gt;
+			          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+			          &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+			          &lt;version&gt;${compiler.version}&lt;/version&gt;
+			          &lt;configuration&gt;
+			            &lt;source&gt;${jdk.version}&lt;/source&gt;
+			            &lt;target&gt;${jdk.version}&lt;/target&gt;
+			          &lt;/configuration&gt;
+			        &lt;/plugin&gt;
+			        &lt;plugin&gt;
+			          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+			          &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+			          &lt;version&gt;${surefire.version}&lt;/version&gt;
+			          &lt;configuration&gt;
+			            &lt;skipTests&gt;true&lt;/skipTests&gt;
+			          &lt;/configuration&gt;
+			        &lt;/plugin&gt;
+			      &lt;/plugins&gt;
+			    &lt;/pluginManagement&gt;
+			  &lt;/build&gt;
+		      [. . .]
+			&lt;/project&gt;
+		    </pre>
+		    <div>pluginManagement 用于插件的管理, 作用与 dependencyManagement 雷同, 这里不再赘述。</div>
+		    <span class="fragment en">kitty-core pom</span>
+		    <pre class="brush:xml;">
+		    &lt;project&gt;
+			  &lt;parent&gt;
+			    &lt;groupId&gt;org.lychie&lt;/groupId&gt;
+			    &lt;artifactId&gt;kitty-parent&lt;/artifactId&gt;
+			    &lt;version&gt;1.0.0&lt;/version&gt;
+			  &lt;/parent&gt;
+			  &lt;artifactId&gt;kitty-core&lt;/artifactId&gt;
+			  &lt;dependencies&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;junit&lt;/groupId&gt;
+			      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+			    &lt;/dependency&gt;
+			  &lt;/dependencies&gt;
+			  &lt;build&gt;
+			    &lt;plugins&gt;
+			      &lt;plugin&gt;
+			        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+			        &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+			      &lt;/plugin&gt;
+			    &lt;/plugins&gt;
+			  &lt;/build&gt;
+			&lt;/project&gt;
+			</pre>
+			<div>这是子模块项目 kitty-core 的配置片段, 可以看到, 它在使用依赖和插件时, 都只需要声明 groupId 和 artifactId。</div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1i37YpeP" target="_blank">multi-modules.zip</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041904" data-title="Maven 多模块项目依赖管理" data-url="http://lychie.github.io/pages/articles/maven/15041904.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
