@@ -394,3 +394,12 @@ a.light:hover {
 a#fancy img{
 	margin-top: 5px;
 }
+
+.preo pre {
+	line-height: 18px;
+	font-family: Consolas;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	margin-left: 0;
+	padding-left: 0;
+}
