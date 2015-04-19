@@ -1,0 +1,310 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring Test Transactional @Rollback</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li><a href='../../../classlib.html'>类 库</a></li>
+          <li class='last'><a href='../../../about.html'>关 于</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring Test Transactional @Rollback</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-19</span>
+		      <span id="archive">归档：spring-test</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Junit 4.11</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">MySQL 5.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment en">pom.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;project&gt;
+			  &lt;properties&gt;
+			    &lt;spring.version&gt;4.1.5.RELEASE&lt;/spring.version&gt;
+			    &lt;mysql.version&gt;5.1.17&lt;/mysql.version&gt;
+			    &lt;junit.version&gt;4.11&lt;/junit.version&gt;
+			    &lt;hamcrest.version&gt;1.3&lt;/hamcrest.version&gt;
+			    &lt;aspectj.version&gt;1.6.8&lt;/aspectj.version&gt;
+			  &lt;/properties&gt;
+			  &lt;dependencies&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			      &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+			      &lt;version&gt;${spring.version}&lt;/version&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			      &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+			      &lt;version&gt;${spring.version}&lt;/version&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			      &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+			      &lt;version&gt;${spring.version}&lt;/version&gt;
+			      &lt;scope&gt;test&lt;/scope&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;mysql&lt;/groupId&gt;
+			      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+			      &lt;version&gt;${mysql.version}&lt;/version&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+			      &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;
+			      &lt;version&gt;${aspectj.version}&lt;/version&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;org.hamcrest&lt;/groupId&gt;
+			      &lt;artifactId&gt;hamcrest-all&lt;/artifactId&gt;
+			      &lt;version&gt;${hamcrest.version}&lt;/version&gt;
+			      &lt;scope&gt;test&lt;/scope&gt;
+			    &lt;/dependency&gt;
+			    &lt;dependency&gt;
+			      &lt;groupId&gt;junit&lt;/groupId&gt;
+			      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+			      &lt;version&gt;${junit.version}&lt;/version&gt;
+			      &lt;scope&gt;test&lt;/scope&gt;
+			      &lt;exclusions&gt;
+			        &lt;exclusion&gt;
+			          &lt;groupId&gt;org.hamcrest&lt;/groupId&gt;
+			          &lt;artifactId&gt;hamcrest-core&lt;/artifactId&gt;
+			        &lt;/exclusion&gt;
+			      &lt;/exclusions&gt;
+			    &lt;/dependency&gt;
+			  &lt;/dependencies&gt;
+			&lt;/project&gt;
+		    </pre>
+		    <span class="fragment en">beans.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+			&lt;beans xmlns="http://www.springframework.org/schema/beans"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xmlns:context="http://www.springframework.org/schema/context"
+			  xmlns:tx="http://www.springframework.org/schema/tx"
+			  xmlns:aop="http://www.springframework.org/schema/aop"
+			  xsi:schemaLocation="http://www.springframework.org/schema/beans
+			  http://www.springframework.org/schema/beans/spring-beans.xsd
+			  http://www.springframework.org/schema/context
+			  http://www.springframework.org/schema/context/spring-context.xsd
+			  http://www.springframework.org/schema/tx 
+			  http://www.springframework.org/schema/tx/spring-tx.xsd
+			  http://www.springframework.org/schema/aop 
+			  http://www.springframework.org/schema/aop/spring-aop.xsd"&gt;
+			  
+			  &lt;context:annotation-config /&gt;
+			  
+			  &lt;context:component-scan base-package="org.lychie" /&gt;
+			  
+			  &lt;context:property-placeholder location="classpath:jdbc.properties" /&gt;
+			  &lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+			    &lt;property name="url" value="${jdbc.url}" /&gt;
+			    &lt;property name="username" value="${jdbc.username}" /&gt;
+			    &lt;property name="password" value="${jdbc.password}" /&gt;
+			    &lt;property name="driverClassName" value="${jdbc.driverClassName}" /&gt;
+			  &lt;/bean&gt;
+			  
+			  &lt;bean class="org.springframework.jdbc.core.JdbcTemplate"&gt;
+			    &lt;property name="dataSource" ref="dataSource" /&gt;
+			  &lt;/bean&gt;
+			  
+			  &lt;bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"&gt;
+			    &lt;property name="dataSource" ref="dataSource" /&gt;
+			  &lt;/bean&gt;
+			 
+			  &lt;tx:annotation-driven transaction-manager="transactionManager"/&gt;
+			  
+			  &lt;tx:advice id="txAdvice" transaction-manager="transactionManager"&gt;
+			    &lt;tx:attributes&gt;
+			      &lt;tx:method name="save*" propagation="REQUIRED" rollback-for="Throwable" /&gt;
+			      &lt;tx:method name="insert*" propagation="REQUIRED" rollback-for="Throwable" /&gt;
+			      &lt;tx:method name="update*" propagation="REQUIRED" rollback-for="Throwable" /&gt;
+			      &lt;tx:method name="delete*" propagation="REQUIRED" rollback-for="Throwable" /&gt;
+			      &lt;tx:method name="*" read-only="true" /&gt; 
+			    &lt;/tx:attributes&gt;
+			  &lt;/tx:advice&gt;
+			
+			  &lt;aop:config&gt;
+			    &lt;aop:advisor pointcut="execution(* org.lychie.dao.*.*(..))" advice-ref="txAdvice" /&gt;
+			  &lt;/aop:config&gt;
+			  
+			&lt;/beans&gt;
+		    </pre>
+		    <span class="fragment en">LoggerRule.java</span>
+		    <pre class="brush:java;">
+		    public class LoggerRule implements TestRule {
+			
+				@Override
+				public Statement apply(final Statement base, final Description description) {
+					return new Statement() {
+						@Override
+						public void evaluate() throws Throwable {
+							String method = description.getDisplayName();
+							System.out.println("---> " + method + " is ready to execute");
+							base.evaluate();
+							System.out.println("---> " + method + " has been executed");
+						}
+					};
+				}
+				
+			}
+		    </pre>
+		    <span class="fragment en">EmployeeDaoImpl.java</span>
+		    <pre class="brush:java;">
+		    @Repository
+			public class EmployeeDaoImpl implements EmployeeDao {
+			
+				@Autowired
+				private JdbcTemplate jdbcTemplate;
+				
+				@Override
+				public List&lt;Employee&gt; getAll() {
+					String sql = "SELECT * FROM Employee";
+					return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class));
+				}
+			
+				@Override
+				public boolean insert(Employee employee) {
+					String sql = "INSERT INTO Employee(id, name, age, mail) VALUES(?, ?, ?, ?)";
+					int result = jdbcTemplate.update(sql, null, employee.getName(), employee.getAge(), employee.getMail());
+					return result > 0;
+				}
+			
+			}
+		    </pre>
+		    <span class="fragment en">EmployeeDaoImplTest.java</span>
+		    <pre class="brush:java;">
+		    @RunWith(SpringJUnit4ClassRunner.class)
+			@ContextConfiguration("/beans.xml")
+			@Transactional
+			public class EmployeeDaoImplTest {
+			
+				@Autowired
+				private EmployeeDao employeeDao;
+				
+				@Rule
+				public TestRule loggerRule = new LoggerRule();
+			
+				@Test
+				@Rollback
+				public void testInsert() {
+					Employee employee = new Employee();
+					employee.setAge(20);
+					employee.setName("店小四");
+					employee.setMail("dianxiaosi@yeah.net");
+					boolean successful = employeeDao.insert(employee);
+					assertThat(successful, is(true));
+				}
+			
+			}
+		    </pre>
+		    <div>前面是测试环境的准备, 没有什么特别的。这里才是焦点的开始。<br>
+		    @Rollback 默认值是 true, 如果想设为 false, 可使用 @Rollback(false) 标注。执行单元测试的结果, 如下 ：
+		    </div>
+		    <div class="precode">
+		    ---> testInsert(org.lychie.dao.impl.EmployeeDaoImplTest) is ready to execute<br>
+		    <span style="color:#6495ED">
+			四月 20, 2015 12:01:19 上午 org.springframework.test.context.transaction.TransactionContext startTransaction<br>
+			</span>
+			<span style="color:#3CB371">
+			信息: Began transaction (1) for test context [DefaultTestContext@3f9b4e74 testClass = EmployeeDaoImplTest, <br>
+			<span style="padding-left:32px;">&nbsp;</span>testInstance = org.lychie.dao.impl.EmployeeDaoImplTest@6d3bc24b, testMethod = testInsert@EmployeeDaoImplTest, <br>
+			<span style="padding-left:32px;">&nbsp;</span>testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6e5101f3 testClass = <br>
+			<span style="padding-left:32px;">&nbsp;</span>EmployeeDaoImplTest, locations = '{classpath:/beans.xml}', classes = '{}', contextInitializerClasses = '[]', <br>
+			<span style="padding-left:32px;">&nbsp;</span>activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextLoader = <br>
+			<span style="padding-left:32px;">&nbsp;</span>'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager <br>
+			<span style="padding-left:32px;">&nbsp;</span>[org.springframework.jdbc.datasource.DataSourceTransactionManager@857311a]; rollback [true]<br>
+			</span>
+			<span style="color:#6495ED">
+			四月 20, 2015 12:01:19 上午 org.springframework.test.context.transaction.TransactionContext endTransaction<br>
+			</span>
+			<span style="color:#3CB371">
+			信息: Rolled back transaction for test context [DefaultTestContext@3f9b4e74 testClass = EmployeeDaoImplTest, <br>
+			<span style="padding-left:32px;">&nbsp;</span>testInstance = org.lychie.dao.impl.EmployeeDaoImplTest@6d3bc24b, testMethod = testInsert@EmployeeDaoImplTest, <br>
+			<span style="padding-left:32px;">&nbsp;</span>testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6e5101f3 testClass =  <br>
+			<span style="padding-left:32px;">&nbsp;</span>EmployeeDaoImplTest, locations = '{classpath:/beans.xml}', classes = '{}', contextInitializerClasses = '[]', <br>
+			<span style="padding-left:32px;">&nbsp;</span>activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextLoader = <br>
+			<span style="padding-left:32px;">&nbsp;</span>'org.springframework.test.context.support.DelegatingSmartContextLoader', parent  = [null]]].<br>
+			</span>
+			---> testInsert(org.lychie.dao.impl.EmployeeDaoImplTest) has been executed
+		    </div>
+		    <div>测试执行结果的信息已经用不同的颜色标识了出来, 仔细阅读, 你可以获得 testInsert 在执行期间的详细信息 ：方法开始 --> 事务开始 --> 事务回滚 --> 事务结束 --> 方法结束。
+		    <br>使用 @Rollback 的好处是, 测试数据不会对数据库造成污染, 这一点是很重要的。但 @Rollback 其实也不是真正意义上的数据零污染, 如果数据库表的主键是自增长类型, 虽然发生了事务回滚, 但是主键还是会递增的。
+		    <br>执行这个测试, 数据库是不会插入记录的, 如果把 @Rollback 改成 @Rollback(false), 数据库就会插入一条数据。
+		    <br>@Rollback 需要 @Transactional 的支持, 如果没有 @Transactional 标注, 则事务就不会受 @Rollback 的控制。
+		    </div>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1o6n5vya" target="_blank">SpringTestTransactionalRollback.zip</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041923" data-title="Spring Test Transactional @Rollback" data-url="http://lychie.github.io/pages/articles/springmvc/15041923.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
