@@ -273,7 +273,7 @@
 			---> testInsert(org.lychie.dao.impl.EmployeeDaoImplTest) has been executed
 		    </div>
 		    <div>测试执行结果的信息已经用不同的颜色标识了出来, 仔细阅读, 你可以获得 testInsert 在执行期间的详细信息 ：方法开始 --> 事务开始 --> 事务回滚 --> 事务结束 --> 方法结束。
-		    <br>使用 @Rollback 的好处是, 测试数据不会对数据库造成污染, 这一点是很重要的。但 @Rollback 其实也不是真正意义上的数据零污染, 如果数据库表的主键是自增长类型, 虽然发生了事务回滚, 但是主键还是会递增的。
+		    <br>使用 @Rollback 的好处是, 测试数据不会对数据库造成污染, 这一点是很重要的。但 @Rollback 其实也不是真正意义上的数据零污染, 如果数据库表的主键是自增长类型, 虽然发生了事务回滚, 但是主键的索引还是会递增的。
 		    <br>执行这个测试, 数据库是不会插入记录的, 如果把 @Rollback 改成 @Rollback(false), 数据库就会插入一条数据。
 		    <br>@Rollback 需要 @Transactional 的支持, 如果没有 @Transactional 标注, 则事务就不会受 @Rollback 的控制。
 		    </div>
