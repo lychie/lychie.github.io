@@ -86,6 +86,7 @@
 		    </pre>
 		    <div>
 		    @TransactionConfiguration 是 @TransactionConfiguration(defaultRollback = true) 的简写。@TransactionConfiguration 能够管理类范围内的事务, 与 @Rollback 一样, 它也需要 @Transactional 标注的支持, 否则事务不受 @TransactionConfiguration 的控制。
+		    <br>@TransactionConfiguration 可以与 @Rollback 注解共同工作, 如上面的测试用例, 事务虽然是受 @TransactionConfiguration 控制回滚不提交, 但如果你想提交某一个方法的事务, 你可以通过 @Rollback(false) 来控制提交事务。
 		    <br>执行测试, 数据库不会插入数据, 如果将 @TransactionConfiguration 改为 @TransactionConfiguration(defaultRollback = false), 则数据库插入一条记录。
 		    </div>
 			<br><span class="fragment">示例代码下载</span>
