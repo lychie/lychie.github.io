@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring Test @ContextConfiguration</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li><a href='../../../classlib.html'>类 库</a></li>
+          <li class='last'><a href='../../../about.html'>关 于</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring Test @ContextConfiguration</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-19</span>
+		      <span id="archive">归档：spring-test</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Junit 4.11</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment en">beans.xml</span>
+		    <pre class="brush:xml;">
+		    &lt;beans xmlns="http://www.springframework.org/schema/beans"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xmlns:context="http://www.springframework.org/schema/context"
+			  xsi:schemaLocation="http://www.springframework.org/schema/beans
+			  http://www.springframework.org/schema/beans/spring-beans.xsd
+			  http://www.springframework.org/schema/context
+			  http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+			  
+			  &lt;context:annotation-config /&gt;
+			  
+			  &lt;context:component-scan base-package="org.lychie" /&gt;
+			  
+			&lt;/beans&gt;
+		    </pre>
+		    <span class="fragment en">BusinessServiceImpl</span>
+		    <pre class="brush:java;">
+		    @Service
+			public class BusinessServiceImpl implements BusinessService {
+			
+				@Override
+				public String provide() {
+					return "business service";
+				}
+			
+			}
+		    </pre>
+		    <div>原来你可能是这样做的 ：</div>
+		    <pre class="brush:java;">
+		    public class BusinessServiceImplTest {
+			
+				private static BusinessService businessService;
+				
+				@BeforeClass
+				public static void prepare() {
+					ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+					businessService = context.getBean(BusinessService.class);
+				}
+				
+				@Test
+				public void testProvide() {
+					String result = businessService.provide();
+					System.out.println("---> " + result);
+				}
+			
+			}
+		    </pre>
+		    <div>现在你可以这样做的 ：</div>
+		    <pre class="brush:java;">
+		    @RunWith(SpringJUnit4ClassRunner.class)
+			@ContextConfiguration("/beans.xml")
+			public class BusinessServiceImplTest {
+			
+				@Autowired
+				private BusinessService businessService;
+				
+				@Test
+				public void testProvide() {
+					String result = businessService.provide();
+					System.out.println("---> " + result);
+				}
+			
+			}
+		    </pre>
+		    <div>
+		    SpringJUnit4ClassRunner 是 Spring 针对 Junit4 测试环境提供的扩展, 在 Junit4 测试环境中可以获得 Spring 上下文支持的好处。这样可以在 Junit4 测试环境中使用依赖注入以及执行事务等。
+		    <br>@ContextConfiguration 用于确定如何为集成测试环境装载 Spring 上下文, 典型的是 xml 配置文件的方式。
+		    <br>最后, 不要忘记引入 spring-test 依赖, 具体配置如下 ：
+		    </div>
+		    <span class="fragment en">pom.xml 配置</span>
+		    <pre class="brush:xml;">
+		    &lt;properties&gt;
+			  &lt;spring.version&gt;4.1.5.RELEASE&lt;/spring.version&gt;
+			&lt;/properties&gt;
+			&lt;dependencies&gt;
+			  &lt;dependency&gt;
+			    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			    &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+			    &lt;version&gt;${spring.version}&lt;/version&gt;
+			  &lt;/dependency&gt;
+			  &lt;dependency&gt;
+			    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			    &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+			    &lt;version&gt;${spring.version}&lt;/version&gt;
+			    &lt;scope&gt;test&lt;/scope&gt;
+			  &lt;/dependency&gt;
+			  &lt;dependency&gt;
+			    &lt;groupId&gt;junit&lt;/groupId&gt;
+			    &lt;artifactId&gt;junit&lt;/artifactId&gt;
+			    &lt;version&gt;4.11&lt;/version&gt;
+			    &lt;scope&gt;test&lt;/scope&gt;
+			  &lt;/dependency&gt;
+			&lt;/dependencies&gt;
+		    </pre>
+			<br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1jGBudhG" target="_blank">SpringTestContextConfiguration.zip</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15041915" data-title="Spring Test @ContextConfiguration" data-url="http://lychie.github.io/pages/articles/springmvc/15041915.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
