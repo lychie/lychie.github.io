@@ -387,6 +387,25 @@ a.light:hover {
 	background-color: #222;
 }
 
+.ex-precode {
+	color: white;
+	margin: 5px 0;
+	border: 1px solid #111;
+	padding: 2px 5px;
+	background-color: #222;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.exline {
+	padding-left: 30px;
+}
+
+.excause {
+	color: #6495ED;
+}
+
 #main-content {
 	background: url("images/yc_by_lychie.png") no-repeat right top;
 }
