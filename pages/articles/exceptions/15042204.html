@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <title>java.lang.NoClassDefFoundError: com/jayway/jsonpath/InvalidPathException</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li><a href='../../../classlib.html'>类 库</a></li>
+          <li class='last'><a href='../../../about.html'>关 于</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>java.lang.NoClassDefFoundError: com/jayway/jsonpath/InvalidPathException</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-22</span>
+		      <span id="archive">归档：exceptions</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div>异常信息 ：</div>
+		    <div class="ex-precode">
+		    <span class="excause">java.lang.NoClassDefFoundError: com/jayway/jsonpath/InvalidPathException</span><br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.web.servlet.result.JsonPathResultMatchers.&lt;init&gt;(JsonPathResultMatchers.java:44)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(MockMvcResultMatchers.java:183)<br>
+		     <span class="exline">&nbsp;</span>at org.lychie.controller.EmployeeControllerTest.testJsonInfo(EmployeeControllerTest.java:80)<br>
+		     <span class="exline">&nbsp;</span>at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)<br>
+		     <span class="exline">&nbsp;</span>at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)<br>
+		     <span class="exline">&nbsp;</span>at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)<br>
+		     <span class="exline">&nbsp;</span>at java.lang.reflect.Method.invoke(Method.java:606)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:73)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:82)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:73)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:224)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:83)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:68)<br>
+		     <span class="exline">&nbsp;</span>at org.junit.runners.ParentRunner.run(ParentRunner.java:309)<br>
+		     <span class="exline">&nbsp;</span>at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:163)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)<br>
+		     <span class="exline">&nbsp;</span>at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)<br>
+		<span class="excause">Caused by: java.lang.ClassNotFoundException: com.jayway.jsonpath.InvalidPathException</span><br>
+		     <span class="exline">&nbsp;</span>at java.net.URLClassLoader$1.run(URLClassLoader.java:366)<br>
+		     <span class="exline">&nbsp;</span>at java.net.URLClassLoader$1.run(URLClassLoader.java:355)<br>
+		     <span class="exline">&nbsp;</span>at java.security.AccessController.doPrivileged(Native Method)<br>
+		     <span class="exline">&nbsp;</span>at java.net.URLClassLoader.findClass(URLClassLoader.java:354)<br>
+		     <span class="exline">&nbsp;</span>at java.lang.ClassLoader.loadClass(ClassLoader.java:425)<br>
+		     <span class="exline">&nbsp;</span>at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)<br>
+		     <span class="exline">&nbsp;</span>at java.lang.ClassLoader.loadClass(ClassLoader.java:358)<br>
+		     <span class="exline">&nbsp;</span>... 33 more
+		    </div><br>
+		    <div>Spring MVC Test Framework 没有自动引入 jsonpath 依赖。如果使用到 MockMvcResultMatchers.jsonPath, 需要手动引入 jsonpath 依赖 ：</div>
+		    <pre class="brush:xml;">
+		    &lt;dependency&gt;
+		      &lt;groupId&gt;com.jayway.jsonpath&lt;/groupId&gt;
+		      &lt;artifactId&gt;json-path&lt;/artifactId&gt;
+		      &lt;version&gt;2.0.0&lt;/version&gt;
+		      &lt;scope&gt;test&lt;/scope&gt;
+		    &lt;/dependency&gt;
+		    </pre>
+		    <div>参考 ：<a href="https://jira.spring.io/browse/SPR-11754" target="_blank">https://jira.spring.io/browse/SPR-11754</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15042204" data-title="java.lang.NoClassDefFoundError: com/jayway/jsonpath/InvalidPathException" data-url="http://lychie.github.io/pages/articles/springmvc/15042204.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
