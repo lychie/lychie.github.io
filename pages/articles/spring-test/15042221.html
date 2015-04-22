@@ -1,0 +1,277 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spring MVC Test</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script src="../../../plugins/fancybox/js/jquery.fancybox-1.3.4.js"></script>
+    <link href="../../../plugins/fancybox/css/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen" />
+    <script>
+      $(document).ready(function() {
+	    $("a#fancy").fancybox({
+		    'overlayShow':false,
+		    'transitionIn':'elastic',
+		    'transitionOut':'elastic'
+	    });
+      });
+    </script>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li><a href='../../../classlib.html'>类 库</a></li>
+          <li class='last'><a href='../../../about.html'>关 于</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Spring MVC Test</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-22</span>
+		      <span id="archive">归档：spring-test</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>开发环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Junit 4.11</span>
+		      <span class="items">Spring 4.1.5</span>
+		      <span class="items">MySQL 5.5</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <span class="fragment en">Controller</span>
+		    <pre class="brush:java;">
+		    @Controller
+			@RequestMapping("/employee")
+			public class EmployeeController {
+			
+				@Autowired
+				private EmployeeDao employeeDao;
+				private static final String PAGE_RESULT = "home";
+				
+				@RequestMapping(value = "/list", method = GET)
+				public String list(ModelMap model) {
+					List&lt;Employee&gt; list = employeeDao.getAll();
+					model.put("employeeList", list);
+					return PAGE_RESULT;
+				}
+				
+				@RequestMapping(value = "/save", method = GET)
+				public String save(ModelMap model, Employee employee) {
+					boolean result = employeeDao.save(employee);
+					model.put("success", result);
+					return PAGE_RESULT;
+				}
+				
+				@RequestMapping(value = "/info/{employeeId:[1-9]\\d*}", method = GET)
+				public String info(ModelMap model, @PathVariable Integer employeeId) {
+					Employee employee = employeeDao.queryById(employeeId);
+					model.put("employee", employee);
+					return PAGE_RESULT;
+				}
+				
+				@RequestMapping(value = "/json/save", method = POST)
+				public @ResponseBody boolean save(@RequestBody Employee employee) {
+					boolean result = employeeDao.save(employee);
+					return result;
+				}
+				
+				@RequestMapping(value = "/json/info/{employeeId:[1-9]\\d*}", method = POST)
+				public @ResponseBody Employee info(@PathVariable Integer employeeId) {
+					Employee employee = employeeDao.queryById(employeeId);
+					return employee;
+				}
+				
+			}
+		    </pre>
+		    <span class="fragment">普通处理方法测试</span>
+		    <pre class="brush:java;">
+		    import org.junit.Before;
+			import org.junit.Test;
+			import org.junit.runner.RunWith;
+			import org.lychie.model.Employee;
+			import org.springframework.beans.factory.annotation.Autowired;
+			import org.springframework.test.context.ContextConfiguration;
+			import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+			import org.springframework.test.context.transaction.TransactionConfiguration;
+			import org.springframework.test.context.web.WebAppConfiguration;
+			import org.springframework.test.web.servlet.MockMvc;
+			import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+			import org.springframework.transaction.annotation.Transactional;
+			import org.springframework.web.context.WebApplicationContext;
+			import static org.hamcrest.Matchers.*;
+			import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+			import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+			
+			@RunWith(SpringJUnit4ClassRunner.class)
+			@Transactional
+			@TransactionConfiguration(defaultRollback = false)
+			@WebAppConfiguration
+			@ContextConfiguration({"/spring-context.xml", "/spring-mvc.xml"})
+			public class EmployeeControllerTest {
+			
+				private MockMvc mockMvc;
+				
+				@Autowired
+				private WebApplicationContext context;
+				
+				@Before
+				public void setUp() {
+					mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+				}
+				
+				@Test
+				public void testList() throws Exception {
+					mockMvc.perform(get("/employee/list"))
+						.andExpect(handler().methodName("list"))
+						.andExpect(status().isOk())
+						.andExpect(view().name("home"))
+						.andExpect(forwardedUrl("/WEB-INF/pages/home.jsp"))
+						.andExpect(model().attribute("employeeList", allOf(
+							not(nullValue()), hasSize(greaterThan(0))
+						))).andDo(print());
+				}
+			
+			}
+		    </pre>
+		    <div>
+		    @WebAppConfiguration 用于声明为集成测试环境加载的 ApplicationContext 是一个 WebApplicationContext 类型。<br>
+		    @WebAppConfiguration 标注的 value 注解用于指定 web 应用的根路径, 默认是 @WebAppConfiguration("src/main/webapp")。
+		    <br>@WebAppConfiguration 注解需要 @ContextConfiguration 的支持。其余注解可参考本站点 junit 和 spring-test 相关文章。
+		    <br>MockMvc 有两种构建方式 ：
+		    <br>1．MockMvcBuilders.webAppContextSetup(WebApplicationContext context), 从上下文环境中获取控制器以构建 MockMvc
+		    <br>2．MockMvcBuilders.standaloneSetup(Object... controllers), 通过指定的控制器来构建 MockMvc
+		    <br>测试流程大致为 ：
+		    <br>MockMvc.perform, 执行一个请求
+		    <br>MockMvcRequestBuilders.get 构造一个请求
+		    <br>ResultActions.andExpect 结果断言
+		    <br>ResultActions.andDo 结果处理
+		    </div>
+		    <div>执行测试, 结果如下 ：</div>
+			<div><a id="fancy" href="../../../images/articles/spring-test/15042221/testList_b.png"><img src="../../../images/articles/spring-test/15042221/testList_s.png" title="查看图片"></a></div>
+		    <span class="fragment">测试绑定参数到处理方法</span>
+		    <pre class="brush:java;">
+		    @Test
+			public void testSave() throws Exception {
+				mockMvc.perform(get("/employee/save")
+					.param("name", "店小四")
+					.param("age", "20")
+					.param("mail", "dianxiaosi@yeah.net"))
+					.andExpect(handler().methodName("save"))
+					.andExpect(status().isOk())
+					.andExpect(view().name("home"))
+					.andExpect(forwardedUrl("/WEB-INF/pages/home.jsp"))
+					.andExpect(model().attribute("success", is(true)))
+					.andDo(print());
+			}
+		    </pre>
+		    <div>通过 param(String, String...) 来传参到处理方法, 执行测试, 结果如下 ：</div>
+			<div><a id="fancy" href="../../../images/articles/spring-test/15042221/testSave_b.png"><img src="../../../images/articles/spring-test/15042221/testSave_s.png" title="查看图片"></a></div>
+			<span class="fragment en">测试绑定参数到URL模板</span>
+		    <pre class="brush:java;">
+		    @Test
+			public void testInfo() throws Exception {
+				mockMvc.perform(get("/employee/info/{employeeId:[1-9]\\d*}", 2))
+					.andExpect(handler().methodName("info"))
+					.andExpect(status().isOk())
+					.andExpect(forwardedUrl("/WEB-INF/pages/home.jsp"))
+					.andExpect(model().attribute("employee",allOf(
+						not(nullValue()), isA(Employee.class)
+					))).andDo(print());
+			}
+		    </pre>
+		    <div>通过 get(String urlTemplate, Object... urlVariables) 绑定参数到URL模板, 执行测试, 结果如下 ：</div>
+			<div><a id="fancy" href="../../../images/articles/spring-test/15042221/testInfo_b.png"><img src="../../../images/articles/spring-test/15042221/testInfo_s.png" title="查看图片"></a></div>
+		    <span class="fragment en">测试绑定JSON参数到处理方法</span>
+		    <pre class="brush:java;">
+		    @Test
+			public void testJsonSave() throws Exception {
+				String employee = "{\"id\":null,\"age\":18,\"name\":\"店小六\",\"mail\":\"dianxiaoliu@163.com\"}";
+				mockMvc.perform(post("/employee/json/save").contentType("application/json").content(employee))
+					.andExpect(handler().methodName("save"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$").value(true))
+					.andDo(print());
+			}
+		    </pre>
+		    <div>通过 content(String) 绑定JSONG参数到处理方法, jsonPath 用法参考 <a href="http://goessner.net/articles/JsonPath/" target="_blank">http://goessner.net/articles/JsonPath</a>, 执行测试, 结果如下 ：</div>
+			<div><a id="fancy" href="../../../images/articles/spring-test/15042221/testJsonSave_b.png"><img src="../../../images/articles/spring-test/15042221/testJsonSave_s.png" title="查看图片"></a></div>
+		    <span class="fragment en">测试返回JSON数据的处理方法</span>
+		    <pre class="brush:java;">
+		    @Test
+			public void testJsonInfo() throws Exception {
+				mockMvc.perform(post("/employee/json/info/{employeeId:[1-9]\\d*}", "2").accept("application/json"))
+					.andExpect(handler().methodName("info"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.id").value(2))
+					.andDo(print());
+			}
+		    </pre>
+		    <div>jsonPath 用法参考 <a href="http://goessner.net/articles/JsonPath/" target="_blank">http://goessner.net/articles/JsonPath</a>, 执行测试, 结果如下 ：</div>
+			<div><a id="fancy" href="../../../images/articles/spring-test/15042221/testJsonInfo_b.png"><img src="../../../images/articles/spring-test/15042221/testJsonInfo_s.png" title="查看图片"></a></div>
+		    <br><span class="fragment">示例代码下载</span>
+			<div><a class="download" href="http://pan.baidu.com/s/1mgBWffq" target="_blank">SpringMVCTest.zip</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15042221" data-title="Spring MVC Test" data-url="http://lychie.github.io/pages/articles/springmvc/15042221.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
