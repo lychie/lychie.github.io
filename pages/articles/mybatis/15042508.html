@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+<head>
+  <title>Mybatis Mapper XML</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <meta name="keywords" content="junit,@Ignore"/>
+  <meta name="description" content="junit,@Ignore"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>Mybatis Mapper XML</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-04-25</span>
+            <span id="archive">归档：mybatis</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Mybatis 3.2.7</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Spring 4.1.5</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <span class="fragment en">namespace</span>
+          <pre class="brush:xml;">
+            &lt;mapper namespace="org.lychie.mapper.ArticleMapper"&gt;
+
+            &lt;/mapper&gt;
+          </pre>
+          <div>
+            mybatis 的前身是 ibatis, 在 ibatis 中 namespace 是可选的。在 mybatis 中, namespace 是必须项, 它用于将当前的 XML 映射文件与指定的 Mapper 接口绑定起来。namespace 的值为需要绑定的 Mapper 接口的完全限定名。 
+          </div>
+          <span class="fragment en">select</span>
+          <pre class="brush:xml;">
+            &lt;select id="queryById" parameterType="int" resultType="Article"&gt;
+              SELECT * FROM ARTICLE WHERE ID = #{ID}
+            &lt;/select&gt;
+          </pre>
+          <div>映射查询语句。</div>
+          <span class="fragment-abs">parameterType</span>
+          <div>指定 SQL 参数类型。语法 ：#{name} 或 ${name}。int 是 mybatis 内建的类型别名, 映射到的类型是 Integer。#{ID}, 由于指定的参数类型是整型, 整型以及简单的数据类型 ( 如 String ) 由于没有相关的属性, 它将完全由传入的参数值替换, 也就是说, #{ID} 实际上你可以用任意字符作为变量参数名, 如 #{ID1}, #{ID2} 等。</div>
+          <span class="fragment-abs">resultType</span>
+          <div>指定 SQL 查询结果的数据类型。( 此处的 Article 是类型别名, 如果类没有定义别名, 需使用完全限定名 org.lychie.model.Article )。如果查询结果是一个 List 集合, 应指定集合的元素的类型。</div>
+          <span class="fragment-abs">id</span>
+          <div>在命名空间内必须保证其唯一性, 用于代表这条 SQL 语句。在 Mapper 接口中声明与此 id 一致的方法, 就能将 SQL 绑定到此方法中, Mapper 接口不需要手工编写实现类, 你只需声明方法, 剩下的事情就都交给 mybatis 来做了。</div>
+          <span class="fragment-abs">org.lychie.mapper.ArticleMapper</span>
+          <pre class="brush:java;">
+    			public interface ArticleMapper {
+    			
+    				Article queryById(int id);
+    				
+    			}          
+          </pre>
+          <span class="fragment-abs">mybatis spring 配置类别名</span>
+          <pre class="brush:xml">
+            &lt;bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"&gt;
+              [ . . . ]
+              &lt;property name="typeAliasesPackage" value="org.lychie.model" /&gt;
+              [ . . . ]
+            &lt;/bean&gt;
+          </pre>
+          <div>typeAliasesPackage指定到实体类所在的包, 即可为该包以及子包下所有的类生成相应的类型别名 ( 别名为类的短类名 )。</div>
+          <span class="fragment en">mybatis 内建别名映射的类型</span>
+          <p class="text" style="margin-top:-4px;">
+            <table class="bordered">
+              <thead>
+                <tr>
+                  <th width="50%" style="font-family:'Microsoft YaHei'">别 名</th>
+                  <th width="50%" style="font-family:'Microsoft YaHei'">映 射 的  类 型</th>
+                </tr>
+              </thead>
+              <tr>
+                <td>_byte</td>
+                <td>byte</td>
+              </tr>
+              <tr>
+                <td>_long</td>
+                <td>long</td>
+              </tr>
+              <tr>
+                <td>_short</td>
+                <td>short</td>
+              </tr>
+              <tr>
+                <td>_int</td>
+                <td>int</td>
+              </tr>
+              <tr>
+                <td>_integer</td>
+                <td>int</td>
+              </tr>
+              <tr>
+                <td>_double</td>
+                <td>double</td>
+              </tr>
+              <tr>
+                <td>_float</td>
+                <td>float</td>
+              </tr>
+              <tr>
+                <td>_boolean</td>
+                <td>boolean</td>
+              </tr>
+              <tr>
+                <td>string</td>
+                <td>String</td>
+              </tr>
+              <tr>
+                <td>byte</td>
+                <td>Byte</td>
+              </tr>
+              <tr>
+                <td>long</td>
+                <td>Long</td>
+              </tr>
+              <tr>
+                <td>short</td>
+                <td>Short</td>
+              </tr>
+              <tr>
+                <td>int</td>
+                <td>Integer</td>
+              </tr>
+              <tr>
+                <td>integer</td>
+                <td>Integer</td>
+              </tr>
+              <tr>
+                <td>double</td>
+                <td>Double</td>
+              </tr>
+              <tr>
+                <td>float</td>
+                <td>Float</td>
+              </tr>
+              <tr>
+                <td>boolean</td>
+                <td>Boolean</td>
+              </tr>
+              <tr>
+                <td>date</td>
+                <td>Date</td>
+              </tr>
+              <tr>
+                <td>decimal</td>
+                <td>BigDecimal</td>
+              </tr>
+              <tr>
+                <td>bigdecimal</td>
+                <td>BigDecimal</td>
+              </tr>
+              <tr>
+                <td>object</td>
+                <td>Object</td>
+              </tr>
+              <tr>
+                <td>map</td>
+                <td>Map</td>
+              </tr>
+              <tr>
+                <td>hashmap</td>
+                <td>HashMap</td>
+              </tr>
+              <tr>
+                <td>list</td>
+                <td>List</td>
+              </tr>
+              <tr>
+                <td>arraylist</td>
+                <td>ArrayList</td>
+              </tr>
+              <tr>
+                <td>collection</td>
+                <td>Collection</td>
+              </tr>
+              <tr>
+                <td>iterator</td>
+                <td>Iterator</td>
+              </tr>
+            </table>
+          </p>
+          <span class="fragment en">#{} and ${}</span>
+          <div>
+            <span class="fragment-abs">${}</span><br>
+            传入的值直接拼接到 SQL 中。如 <span class="code">WHERE ID = #{ID}</span>, 若传入的值为 1, 则解析的 SQL 为 <span class="code">WHERE ID = 1</span>。这样容易遭到恶意的 SQL 攻击, 如若传入的值为 <span class="code">0 OR 1 = 1</span>, 则最后解析成的 SQL 为 <span class="code">WHERE ID = 0 OR 1 = 1</span>, 不管 ID 为 0 的数据存不存在, 这条 SQL 总是会返回数据记录的, 并且可能返回不止一条数据。<br>
+            <span class="fragment-abs">#{}</span><br>
+            传入的值加引号作为 SQL 的参数。如 <span class="code">WHERE ID = #{ID}</span>, 若传入的值为 1, 则解析的 SQL 为 <span class="code">WHERE ID = "1"</span>。${} 能够有效的防止 SQL 注入攻击。
+          </div>
+          <span class="fragment en">insert</span>
+          <pre class="brush:xml">
+            &lt;insert id="save" parameterType="Article"&gt;
+              INSERT INTO ARTICLE(TITLE, AUTHOR, CONTENT, CREATETIME) 
+                VALUES(#{title}, #{author}, #{content}, now())
+            &lt;/insert&gt;
+          </pre>
+          <div>映射插入语句。其中, title, author, content 为参数对象的属性名称。解析 SQL 时, 用传入的参数对象的属性值来替换它们。</div>
+          <pre class="brush:java">
+            public interface ArticleMapper {
+			  
+			  Integer save(Article article);
+			  
+			}
+          </pre>
+          <div>注意这里返回的不是插入的记录的主键, 而是成功插入记录的条数。</div>
+          <span class="fragment en">update</span>
+          <pre class="brush:xml">
+            &lt;update id="update" parameterType="Article"&gt;
+              UPDATE ARTICLE SET TITLE = #{title}, CONTENT = #{content}, CREATETIME = now()
+                WHERE ID = #{id}
+            &lt;/update&gt;
+          </pre>
+          <div>映射更新语句。</div>
+          <pre class="brush:java">
+			public interface ArticleMapper {
+				
+				Integer update(Article article);
+				
+			}
+          </pre>
+          <div>返回值为成功更新记录的条数。</div>
+          <span class="fragment en">delete</span>
+          <pre class="brush:xml">
+            &lt;delete id="delete" parameterType="Article"&gt;
+              DELETE FROM ARTICLE WHERE ID = #{id}
+            &lt;/delete&gt;
+            
+            &lt;delete id="deleteById" parameterType="int"&gt;
+              DELETE FROM ARTICLE WHERE ID = #{ID}
+            &lt;/delete&gt;
+          </pre>
+          <div>映射删除语句。</div>
+          <pre class="brush:java">
+          public interface ArticleMapper {
+            
+            Integer deleteById(int id);
+            
+            Integer delete(Article article);
+            
+          }
+          </pre>
+          <div>返回值为成功删除记录的条数。</div>
+          <span class="fragment en">ArticleMapper.xml 完整配置</span>
+          <pre class="brush:xml">
+            &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+            &lt;!DOCTYPE mapper 
+              PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+              "http://mybatis.org/dtd/mybatis-3-mapper.dtd" &gt;
+
+            &lt;mapper namespace="org.lychie.mapper.ArticleMapper"&gt;
+
+              &lt;select id="queryById" parameterType="int" resultType="Article"&gt;
+                SELECT * FROM ARTICLE WHERE ID = #{ID}
+              &lt;/select&gt;
+
+              &lt;insert id="save" parameterType="Article"&gt;
+                INSERT INTO ARTICLE(TITLE, AUTHOR, CONTENT, CREATETIME) 
+                  VALUES(#{title}, #{author}, #{content}, now())
+              &lt;/insert&gt;
+              
+              &lt;update id="update" parameterType="Article"&gt;
+                UPDATE ARTICLE SET TITLE = #{title}, CONTENT = #{content}, CREATETIME = now()
+                  WHERE ID = #{id}
+              &lt;/update&gt;
+              
+              &lt;delete id="delete" parameterType="Article"&gt;
+                DELETE FROM ARTICLE WHERE ID = #{id}
+              &lt;/delete&gt;
+              
+              &lt;delete id="deleteById" parameterType="int"&gt;
+                DELETE FROM ARTICLE WHERE ID = #{ID}
+              &lt;/delete&gt;
+
+            &lt;/mapper&gt;
+          </pre>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15042508" data-title="Junit @Ignore" data-url="http://lychie.github.io/pages/articles/mybatis/15042508.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
