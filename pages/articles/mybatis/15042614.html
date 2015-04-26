@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <title>Mybatis SQL Parameters</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>Mybatis SQL Parameters</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-04-26</span>
+            <span id="archive">归档：mybatis</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Mybatis 3.2.7</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Spring 4.1.5</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <span class="fragment en">参数语法</span>
+          <div>mybatis sql 参数的语法有两种 ：#{} 与 ${}</div>
+          <div><span style="color:#008080">${}</span> 是不经任何处理将传入的值直接替换掉参数变量拼接到 SQL 语句中。如 ：</div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>WHERE</span> name <span style='color:#F08080'>=</span> ${name} <span style='color:#F08080'>AND</span> password <span style='color:#F08080'>=</span> ${password}</div>
+          <div>若传入 <span class="code">name : admin, password : admin</span>, 则最终的 SQL 语句为 ：</div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>WHERE</span> name <span style='color:#F08080'>=</span> admin <span style='color:#F08080'>AND</span> password <span style='color:#F08080'>=</span> admin</div>
+          <div>这样容易遭到恶意的 SQL 攻击, 如若传入的值为 <span class="code">name : 1 or 1 = 1, password : 1 or 1 = 1</span>, 则最终的 SQL 语句为 ：</div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>WHERE</span> name <span style='color:#F08080'>=</span> 1 or 1 = 1 <span style='color:#F08080'>AND</span> password <span style='color:#F08080'>=</span> 1 or 1 = 1</div>
+          <div>无论如何, 这条 SQL 总是会返回有效数据的, 除非数据库没有数据。</div>
+          <div><span style="color:#008080">#{}</span> 是经过预编译处理, 传入到 SQL 参数中的值是安全的。</div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>WHERE</span> name <span style='color:#F08080'>=</span> #{name} <span style='color:#F08080'>AND</span> password <span style='color:#F08080'>=</span> #{password}</div>
+          <div>若传入 <span class="code">name : admin, password : admin</span>, 则最终的 SQL 语句为 ：</div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>WHERE</span> name <span style='color:#F08080'>=</span> ? <span style='color:#F08080'>AND</span> password <span style='color:#F08080'>=</span> ?</div>
+          <div>它相当于 ：</div>
+          <pre class="brush:java">
+          String sql = "SELECT * FROM USER WHERE name = ? AND password = ?";
+          PreparedStatement preparedStatement = conn.prepareStatement(sql);
+          preparedStatement.setString(1, "admin");
+          preparedStatement.setString(2, "admin");
+          </pre>
+          <div>但有时候 SQL 的参数只能用 ${} 语法, 不能使用 #{} 语法, 例如 <span class="code">ORDER BY</span></div>
+          <div class="precode"><span style='color:#F08080'>SELECT * FROM</span> USER <span style='color:#F08080'>ORDER BY</span> ${regTime}</div>
+          <span class="fragment en">参数类型</span>
+          <div>如果传入的参数是一个简单的数据类型, 如原生类型、包装类型、String 等没有对象属性的数据类型。这种数据类型的参数与 SQL 语句中的参数名称无关, 它将完全由传入的参数值来替代。例如 ：</div>
+          <pre class="brush:xml">
+            &lt;select id="queryById" parameterType="int" resultType="User"&gt;
+              SELECT * FROM USER WHERE id = #{id}
+            &lt;/select&gt;
+          </pre>
+          <div>这里的参数类型设成了 int, 那么, SQL 中的参数名称可以是任意串的内容, 你可以写成 #{userId} 等, 不是非得写成 #{id}, 只不过我们习惯了这样做。</div>
+          <div>如果传入的参数是一个复杂的对象, 如 ：</div>
+          <pre class="brush:xml">
+            &lt;insert id="save" parameterType="User"&gt;
+              INSERT INTO USER(name, password) VALUES(#{name}, #{password})
+            &lt;/insert&gt;
+          </pre>
+          <div>这里的参数类型设成了 User, 那么, SQL 中的 #{name}, #{password} 参数, 会根据参数名 name, password 去 User 对象中查找属性, 然后将它们的值传入到预处理语句中, 如果从传入的对象中查找不到相应的属性, 将会报出错误。</div>
+          <span class="fragment en">JAVA 与 SQL 数据类型映射</span>
+          <div>javaType 可以指定参数的数据类型, jdbcType 用于指定数据库中的数据类型, 如 ：</div>
+          <pre class="brush:xml">
+            &lt;insert id="save" parameterType="User"&gt;
+              INSERT INTO USER(name, password) VALUES(#{name, javaType=string, jdbcType=VARCHAR}, 
+                #{password, javaType=string, jdbcType=CHAR})
+            &lt;/insert&gt;
+          </pre>
+          <div>实际上, 我们很少这样手工的去设定它们之间的映射关系, 它们通常可以从传入的参数中被推定出来。</div>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15042614" data-title="Mybatis SQL Parameters" data-url="http://lychie.github.io/pages/articles/mybatis/15042614.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
