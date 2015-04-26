@@ -86,11 +86,11 @@
               SELECT * FROM ARTICLE WHERE ID = #{ID}
             &lt;/select&gt;
           </pre>
-          <div>映射查询语句。</div>
+          <div>映射查询语句。参数语法参考 ：<a href="http://lychie.github.io/pages/articles/mybatis/15042614.html" target="_blank">Mybatis SQL Parameters</a></div>
           <span class="fragment-abs">parameterType</span>
-          <div>指定 SQL 参数类型。语法 ：#{name} 或 ${name}。int 是 mybatis 内建的类型别名, 映射到的类型是 Integer。#{ID}, 由于指定的参数类型是整型, 整型以及简单的数据类型 ( 如 String ) 由于没有相关的属性, 它将完全由传入的参数值替换, 也就是说, #{ID} 实际上你可以用任意字符作为变量参数名, 如 #{ID1}, #{ID2} 等。</div>
+          <div>指定 SQL 参数的类型。int 是 mybatis 内建的类型别名, 映射到的类型是 Integer。具体见下面的表格。</div>
           <span class="fragment-abs">resultType</span>
-          <div>指定 SQL 查询结果的数据类型。( 此处的 Article 是类型别名, 如果类没有定义别名, 需使用完全限定名 org.lychie.model.Article )。如果查询结果是一个 List 集合, 应指定集合的元素的类型。</div>
+          <div>指定 SQL 查询结果的数据类型。( 此处的 Article 是类型别名, 如果类没有定义别名, 那就需使用类的完全限定名 org.lychie.model.Article )。如果查询结果是一个 List 集合, 应指定集合的元素的类型。</div>
           <span class="fragment-abs">id</span>
           <div>在命名空间内必须保证其唯一性, 用于代表这条 SQL 语句。在 Mapper 接口中声明与此 id 一致的方法, 就能将 SQL 绑定到此方法中, Mapper 接口不需要手工编写实现类, 你只需声明方法, 剩下的事情就都交给 mybatis 来做了。</div>
           <span class="fragment-abs">org.lychie.mapper.ArticleMapper</span>
@@ -101,15 +101,6 @@
     				
     			}          
           </pre>
-          <span class="fragment-abs">mybatis spring 配置类别名</span>
-          <pre class="brush:xml">
-            &lt;bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"&gt;
-              [ . . . ]
-              &lt;property name="typeAliasesPackage" value="org.lychie.model" /&gt;
-              [ . . . ]
-            &lt;/bean&gt;
-          </pre>
-          <div>typeAliasesPackage指定到实体类所在的包, 即可为该包以及子包下所有的类生成相应的类型别名 ( 别名为类的短类名 )。</div>
           <span class="fragment en">mybatis 内建别名映射的类型</span>
           <p class="text" style="margin-top:-4px;">
             <table class="bordered">
@@ -229,13 +220,6 @@
               </tr>
             </table>
           </p>
-          <span class="fragment en">#{} and ${}</span>
-          <div>
-            <span class="fragment-abs">${}</span><br>
-            传入的值直接拼接到 SQL 中。如 <span class="code">WHERE ID = #{ID}</span>, 若传入的值为 1, 则解析的 SQL 为 <span class="code">WHERE ID = 1</span>。这样容易遭到恶意的 SQL 攻击, 如若传入的值为 <span class="code">0 OR 1 = 1</span>, 则最后解析成的 SQL 为 <span class="code">WHERE ID = 0 OR 1 = 1</span>, 不管 ID 为 0 的数据存不存在, 这条 SQL 总是会返回数据记录的, 并且可能返回不止一条数据。<br>
-            <span class="fragment-abs">#{}</span><br>
-            传入的值加引号作为 SQL 的参数。如 <span class="code">WHERE ID = #{ID}</span>, 若传入的值为 1, 则解析的 SQL 为 <span class="code">WHERE ID = "1"</span>。${} 能够有效的防止 SQL 注入攻击。
-          </div>
           <span class="fragment en">insert</span>
           <pre class="brush:xml">
             &lt;insert id="save" parameterType="Article"&gt;
@@ -243,7 +227,7 @@
                 VALUES(#{title}, #{author}, #{content}, now())
             &lt;/insert&gt;
           </pre>
-          <div>映射插入语句。其中, title, author, content 为参数对象的属性名称。解析 SQL 时, 用传入的参数对象的属性值来替换它们。</div>
+          <div>映射插入语句。参数语法参考 ：<a href="http://lychie.github.io/pages/articles/mybatis/15042614.html" target="_blank">Mybatis SQL Parameters</a></div>
           <pre class="brush:java">
             public interface ArticleMapper {
 			  
@@ -259,7 +243,7 @@
                 WHERE ID = #{id}
             &lt;/update&gt;
           </pre>
-          <div>映射更新语句。</div>
+          <div>映射更新语句。参数语法参考 ：<a href="http://lychie.github.io/pages/articles/mybatis/15042614.html" target="_blank">Mybatis SQL Parameters</a></div>
           <pre class="brush:java">
 			public interface ArticleMapper {
 				
@@ -278,7 +262,7 @@
               DELETE FROM ARTICLE WHERE ID = #{ID}
             &lt;/delete&gt;
           </pre>
-          <div>映射删除语句。</div>
+          <div>映射删除语句。参数语法参考 ：<a href="http://lychie.github.io/pages/articles/mybatis/15042614.html" target="_blank">Mybatis SQL Parameters</a></div>
           <pre class="brush:java">
           public interface ArticleMapper {
             
@@ -289,39 +273,6 @@
           }
           </pre>
           <div>返回值为成功删除记录的条数。</div>
-          <span class="fragment en">ArticleMapper.xml 完整配置</span>
-          <pre class="brush:xml">
-            &lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-            &lt;!DOCTYPE mapper 
-              PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-              "http://mybatis.org/dtd/mybatis-3-mapper.dtd" &gt;
-
-            &lt;mapper namespace="org.lychie.mapper.ArticleMapper"&gt;
-
-              &lt;select id="queryById" parameterType="int" resultType="Article"&gt;
-                SELECT * FROM ARTICLE WHERE ID = #{ID}
-              &lt;/select&gt;
-
-              &lt;insert id="save" parameterType="Article"&gt;
-                INSERT INTO ARTICLE(TITLE, AUTHOR, CONTENT, CREATETIME) 
-                  VALUES(#{title}, #{author}, #{content}, now())
-              &lt;/insert&gt;
-              
-              &lt;update id="update" parameterType="Article"&gt;
-                UPDATE ARTICLE SET TITLE = #{title}, CONTENT = #{content}, CREATETIME = now()
-                  WHERE ID = #{id}
-              &lt;/update&gt;
-              
-              &lt;delete id="delete" parameterType="Article"&gt;
-                DELETE FROM ARTICLE WHERE ID = #{id}
-              &lt;/delete&gt;
-              
-              &lt;delete id="deleteById" parameterType="int"&gt;
-                DELETE FROM ARTICLE WHERE ID = #{ID}
-              &lt;/delete&gt;
-
-            &lt;/mapper&gt;
-          </pre>
           <p>&nbsp;</p>
           <div class="jiathis_style_24x24" style="float:right;">
             <a class="jiathis_button_qzone"></a>
