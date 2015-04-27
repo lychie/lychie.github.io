@@ -91,20 +91,28 @@
               SELECT * FROM ROLE WHERE id = #{id}
             &lt;/select&gt;
           </pre>
-          <div>SQL 执行时返回的结果由 mybatis 静默创建一个 resultMap 来映射列到 JavaBean 属性上。这样查询结果的数据就绑定到了 JavaBean 的属性上。这是表列名与实体类属性名一致而进行的静默绑定。如果表列名与实体类属性名称不匹配, 可以通过 SQL 别名 (AS) 来进行配置 ：</div>
+          <div>SQL 执行时返回的结果由 mybatis 静默创建一个 ResultMap 来映射列到 JavaBean 属性上。mybatis 会获取 SQL 返回的列名并在 JAVA 类中查找相同名字的属性 ( 忽略大小写 ), 然后将列的值赋给这些属性。这是自动映射的过程。如果表列名与实体类属性名称不匹配, 可以通过 SQL 别名 (AS) 来进行手工配置 ：</div>
           <pre class="brush:xml">
             &lt;select id="queryById" parameterType="int" resultType="Product"&gt;
-              SELECT prod_id as id, prod_name as name, prod_price as price FROM PRODUCT WHERE prod_id = #{id}
+              SELECT id, prod_name as name, prod_price as price FROM PRODUCT WHERE id = #{id}
             &lt;/select&gt;
           </pre>
           <div>你也可以这样做 ：</div>
           <pre class="brush:xml">
             &lt;resultMap type="Product" id="productResultMap"&gt;
-              &lt;id property="id" column="prod_id" /&gt;
+              &lt;id property="id" column="id" /&gt;
               &lt;result property="name" column="prod_name" /&gt;
               &lt;result property="price" column="prod_price" /&gt;
             &lt;/resultMap&gt;
           </pre>
+          <div>或者可以这样做 ：</div>
+          <pre class="brush:xml">
+            &lt;resultMap type="Product" id="productResultMap"&gt;
+              &lt;result property="name" column="prod_name" /&gt;
+              &lt;result property="price" column="prod_price" /&gt;
+            &lt;/resultMap&gt;
+          </pre>
+          <div>在 &lt;resultMap&gt; 中, 你可以只对一些特殊的属性来进行列的映射, 那些没有手工设定的属性将会进行自动映射, 自动映射的前提是属性名称与数据库表的列的名称相同。自动映射处理完成以后, 手工映射才会被处理。</div>
           <div>像这样来引用它 ：</div>
           <pre class="brush:xml">
             &lt;select id="queryById" parameterType="int" resultMap="productResultMap"&gt;
