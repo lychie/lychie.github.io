@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <title>Mybatis ResultMap</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script src="../../../plugins/fancybox/js/jquery.fancybox-1.3.4.js"></script>
+  <link href="../../../plugins/fancybox/css/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen" />
+  <script>
+    $(document).ready(function() {
+    $("a#fancy").fancybox({
+      'overlayShow':false,
+      'transitionIn':'elastic',
+      'transitionOut':'elastic'
+    });
+    });
+  </script>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>Mybatis ResultMap</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-04-27</span>
+            <span id="archive">归档：mybatis</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Mybatis 3.2.7</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Spring 4.1.5</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <div>数据库表结构 ：</div>
+          <div><a id="fancy" href="../../../images/articles/mybatis/15042701/table_b.png"><img src="../../../images/articles/mybatis/15042701/table_s.png" title="查看图片"></a></div>
+          <div>实体类定义 ：</div>
+          <div><a id="fancy" href="../../../images/articles/mybatis/15042701/model_b.png"><img src="../../../images/articles/mybatis/15042701/model_s.png" title="查看图片"></a></div>
+          <pre class="brush:xml">
+            &lt;select id="queryById" parameterType="int" resultType="Role"&gt;
+              SELECT * FROM ROLE WHERE id = #{id}
+            &lt;/select&gt;
+          </pre>
+          <div>SQL 执行时返回的结果由 mybatis 静默创建一个 resultMap 来映射列到 JavaBean 属性上。这样查询结果的数据就绑定到了 JavaBean 的属性上。这是表列名与实体类属性名一致而进行的静默绑定。如果表列名与实体类属性名称不匹配, 可以通过 SQL 别名 (AS) 来进行配置 ：</div>
+          <pre class="brush:xml">
+            &lt;select id="queryById" parameterType="int" resultType="Product"&gt;
+              SELECT prod_id as id, prod_name as name, prod_price as price FROM PRODUCT WHERE prod_id = #{id}
+            &lt;/select&gt;
+          </pre>
+          <div>你也可以这样做 ：</div>
+          <pre class="brush:xml">
+            &lt;resultMap type="Product" id="productResultMap"&gt;
+              &lt;id property="id" column="prod_id" /&gt;
+              &lt;result property="name" column="prod_name" /&gt;
+              &lt;result property="price" column="prod_price" /&gt;
+            &lt;/resultMap&gt;
+          </pre>
+          <div>像这样来引用它 ：</div>
+          <pre class="brush:xml">
+            &lt;select id="queryById" parameterType="int" resultMap="productResultMap"&gt;
+              SELECT * FROM PRODUCT WHERE prod_id = #{id}
+            &lt;/select&gt;
+          </pre>
+          <div>注意这里的 resultType 和 resultMap 用法的区别。resultType 表明返回的结果的数据类型, 是查询结果的列映射到的类型, 如我们的实体类、Map 等。resultMap 是外部 ResultMap 的引用, 使用的前提是必须先配备 &lt;resultMap&gt;, &lt;resultMap&gt; 定义了数据库表的列与 JavaBean 属性之间的映射关系。
+          <br>另外, resultType 和 resultMap 不能共存, 两者只能选其一, 查询的结果要么是 resultType, 要么是 resultMap。</div>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15042701" data-title="Mybatis ResultMap" data-url="http://lychie.github.io/pages/articles/mybatis/15042701.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
