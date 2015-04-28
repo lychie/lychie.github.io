@@ -112,7 +112,7 @@
               &lt;result property="price" column="prod_price" /&gt;
             &lt;/resultMap&gt;
           </pre>
-          <div>在 &lt;resultMap&gt; 中, 你可以只对一些特殊的属性来进行列的映射, 那些没有手工设定的属性将会进行自动映射, 自动映射的前提是属性名称与数据库表的列的名称相同。自动映射处理完成以后, 手工映射才会被处理。</div>
+          <div>在 &lt;resultMap&gt; 中, 你可以只对一些特殊的属性来进行列的映射, 那些没有手工设定的属性将会进行自动映射, 自动映射的前提是属性名称与查询结果列的名称相同。自动映射处理完成以后, 手工映射才会被处理。</div>
           <div>像这样来引用它 ：</div>
           <pre class="brush:xml">
             &lt;select id="queryById" parameterType="int" resultMap="productResultMap"&gt;
