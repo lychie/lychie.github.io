@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Maven 部署项目到 Tomcat</title>
+    <meta name="robots" content="all"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="lychie,lychie fan,Lychie Fan,范忠云"/>
+    <link href="../../../stylesheets/styles.css" rel="stylesheet">
+    <link href="../../../stylesheets/main.css" rel="stylesheet">
+    <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+    <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+    <script src="../../../plugins/scrolltotop/js/main.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+    <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+    <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+    <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+    <script>
+      SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+      SyntaxHighlighter.all();
+    </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header>
+      <div id='cssmenu'>
+        <ul>
+          <li><a href='../../../index.html'>首 页</a></li>
+          <li class='active'><a href='../../../articles.html'>文 章</a></li>
+          <li><a href='../../../archives.html'>归 档</a></li>
+          <li><a href='../../../classlib.html'>类 库</a></li>
+          <li class='last'><a href='../../../about.html'>关 于</a></li>
+        </ul>
+	  </div>
+    </header>
+    <div class="wrapper">
+      <section>
+	    <div id="main-content">
+          <div id="article-title">
+		    <p>Maven 部署项目到 Tomcat</p>
+		  </div>
+		  <div id="article-attribute">
+		    <p>
+		      <span id="author">作者：範宗雲</span>
+		      <span id="origin">来源：原创</span>
+		      <span id="posted">发布时间：2015-04-29</span>
+		      <span id="archive">归档：maven</span>
+		    </p>
+		  </div>
+		  <div id="contents">
+		    <div id="dev">
+		      <span>环境 ：</span>
+		      <span class="items">JDK 7</span>
+		      <span class="items">Maven 3</span>
+		      <span class="items">Tomcat 7</span>
+		      <span class="items">Eclipse Luna</span>
+		    </div>
+		    <div>首先需要配置好一个 Tomcat 的账户, 并给该账户分配管理权限的角色 ：</div>
+		    <span class="fragment en">tomcat-users.xml</span>
+		    <pre class="brush:xml">
+	    	&lt;tomcat-users&gt;
+
+			  &lt;role rolename="manager-gui"/&gt;
+			  &lt;role rolename="manager-script"/&gt;
+			  &lt;user username="admin" password="admin" roles="manager-gui,manager-script"/&gt;
+
+			&lt;/tomcat-users&gt;
+		    </pre>
+		    <div>角色列表可在 %tomcat7%\webapps\manager\WEB-INF\web.xml 配置文件中找到, 下面是摘自其中的一个片段 ：</div>
+		    <pre class="brush:xml">
+	    	&lt;security-constraint&gt;
+			    &lt;web-resource-collection&gt;
+			      &lt;web-resource-name&gt;HTML Manager interface (for humans)&lt;/web-resource-name&gt;
+			      &lt;url-pattern&gt;/html/*&lt;/url-pattern&gt;
+			    &lt;/web-resource-collection&gt;
+			    &lt;auth-constraint&gt;
+			       &lt;role-name&gt;manager-gui&lt;/role-name&gt;
+			    &lt;/auth-constraint&gt;
+			  &lt;/security-constraint&gt;
+			  &lt;security-constraint&gt;
+			    &lt;web-resource-collection&gt;
+			      &lt;web-resource-name&gt;Text Manager interface (for scripts)&lt;/web-resource-name&gt;
+			      &lt;url-pattern&gt;/text/*&lt;/url-pattern&gt;
+			    &lt;/web-resource-collection&gt;
+			    &lt;auth-constraint&gt;
+			       &lt;role-name&gt;manager-script&lt;/role-name&gt;
+			    &lt;/auth-constraint&gt;
+			  &lt;/security-constraint&gt;
+			  &lt;security-constraint&gt;
+			    &lt;web-resource-collection&gt;
+			      &lt;web-resource-name&gt;JMX Proxy interface&lt;/web-resource-name&gt;
+			      &lt;url-pattern&gt;/jmxproxy/*&lt;/url-pattern&gt;
+			    &lt;/web-resource-collection&gt;
+			    &lt;auth-constraint&gt;
+			       &lt;role-name&gt;manager-jmx&lt;/role-name&gt;
+			    &lt;/auth-constraint&gt;
+			  &lt;/security-constraint&gt;
+			  &lt;security-constraint&gt;
+			    &lt;web-resource-collection&gt;
+			      &lt;web-resource-name&gt;Status interface&lt;/web-resource-name&gt;
+			      &lt;url-pattern&gt;/status/*&lt;/url-pattern&gt;
+			    &lt;/web-resource-collection&gt;
+			    &lt;auth-constraint&gt;
+			       &lt;role-name&gt;manager-gui&lt;/role-name&gt;
+			       &lt;role-name&gt;manager-script&lt;/role-name&gt;
+			       &lt;role-name&gt;manager-jmx&lt;/role-name&gt;
+			       &lt;role-name&gt;manager-status&lt;/role-name&gt;
+			    &lt;/auth-constraint&gt;
+			  &lt;/security-constraint&gt;
+		    </pre>
+		    <p class="text" style="margin-top:-4px;">
+			  <table class="bordered">
+				<thead>
+				  <tr>
+				  	<th width="25%">Role</th>
+					<th width="75%">Desc</th>
+				  </tr>
+				 </thead>
+				 <tr>
+				   <td>manager-gui</td>
+				   <td>允许访问 /manager/html 页面接口 ( Manager App ), 以及 Server Status 页面</td>
+				 </tr>
+				 <tr>
+				   <td>manager-status</td>
+				   <td>只允许访问 Server Status 页面</td>
+				 </tr>
+				 <tr>
+				   <td>manager-script</td>
+				   <td>允许访问 /manager/text 文本接口, 以及 Server Status 页面</td>
+				 </tr>
+				 <tr>
+				   <td>manager-jmx</td>
+				   <td>允许访问 jmx 代理接口, 以及 Server Status 页面</td>
+				 </tr>
+			  </table>
+			</p>
+			<div>更多详细信息可参考 ：<a href="http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html" target="_blank">http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html</a></div>
+			<span class="fragment en">maven settings.xml 配置 Tomcat 服务账户</span>
+			<pre class="brush:xml">
+			&lt;servers&gt;
+			  &lt;server&gt;
+			    &lt;id&gt;tomcat&lt;/id&gt;
+			    &lt;username&gt;admin&lt;/username&gt;
+			    &lt;password&gt;admin&lt;/password&gt;
+			  &lt;/server&gt;
+			&lt;/servers&gt;
+			</pre>
+			<span class="fragment en">项目 pom.xml 配置</span>
+			<pre class="brush:xml">
+			&lt;build&gt;
+		      &lt;plugins&gt;
+		        &lt;plugin&gt;
+		          &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+		          &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+		          &lt;version&gt;2.2&lt;/version&gt;
+		          &lt;configuration&gt;
+		            &lt;server&gt;tomcat&lt;/server&gt;
+		            &lt;url&gt;http://localhost:8081/manager/text&lt;/url&gt;
+		          &lt;/configuration&gt;
+		        &lt;/plugin&gt;
+		      &lt;/plugins&gt;
+		    &lt;/build&gt;
+			</pre>
+			<div>这里的 server 需与 settings.xml 中 tomcat server id 一致, 这样才能找到服务的账号和密码。url 指定到你的 /manager/text 接口路径, 注意不能是 /manager/html 接口路径, /manager/html 接口部署会报 403 的错误。</div>
+			<div>一切准备妥当, 执行 <span class="code">mvn tomcat7:redeploy</span> 即可部署项目到外部 Tomcat 服务。</div>
+			<div class="precode">
+			[INFO] . . . . . .<br>
+			[INFO] &lt;&lt;&lt; tomcat7-maven-plugin:2.2:redeploy (default-cli) &lt; package @ simapp &lt;&lt;&lt;<br>
+			[INFO] <br>
+			[INFO] --- tomcat7-maven-plugin:2.2:redeploy (default-cli) @ simapp ---<br>
+			[INFO] Deploying war to http://localhost:8081/simapp  <br>
+			Uploading: http://localhost:8081/manager/text/deploy?path=%2Fsimapp&update=true<br>
+			Uploaded: http://localhost:8081/manager/text/deploy?path=%2Fsimapp&update=true (3 KB)<br>
+			[INFO] tomcatManager status code:200, ReasonPhrase:OK<br>
+			[INFO] OK - Deployed application at context path /simapp<br>
+			[INFO] ------------------------------------------------------------------------<br>
+			[INFO] BUILD SUCCESS<br>
+			[INFO] ------------------------------------------------------------------------
+			</div>
+			<div>更多 goals 信息可参考 ：<a href="http://tomcat.apache.org/maven-plugin-2.2/context-goals.html" target="_blank">http://tomcat.apache.org/maven-plugin-2.2/context-goals.html</a></div>
+			<p>&nbsp;</p>
+			<div class="jiathis_style_24x24" style="float:right;">
+			  <a class="jiathis_button_qzone"></a>
+			  <a class="jiathis_button_tsina"></a>
+			  <a class="jiathis_button_tqq"></a>
+			  <a class="jiathis_button_weixin"></a>
+			  <a class="jiathis_button_t163"></a>
+			  <a class="jiathis_button_xiaoyou"></a>
+			  <a class="jiathis_button_hi"></a>
+			  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+			  <a class="jiathis_counter_style"></a>
+			</div>
+			<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+			<script src="../../../plugins/duoshuo/main.js"></script>
+			<div class="ds-thread" data-thread-key="15042901" data-title="Maven 部署项目到 Tomcat" data-url="http://lychie.github.io/pages/articles/maven/15042901.html"></div>
+		  </div>
+		</div>
+      </section>
+      <footer>
+        <p>
+          Copyright 2014-2015 Lychie Fan, Hosted on github.
+          <span id="cnzz">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
