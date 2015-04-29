@@ -166,7 +166,7 @@
 		    &lt;/build&gt;
 			</pre>
 			<div>这里的 server 需与 settings.xml 中 tomcat server id 一致, 这样才能找到服务的账号和密码。url 指定到你的 /manager/text 接口路径, 注意不能是 /manager/html 接口路径, /manager/html 接口部署会报 403 的错误。</div>
-			<div>一切准备妥当, 执行 <span class="code">mvn tomcat7:redeploy</span> 即可部署项目到外部 Tomcat 服务。</div>
+			<div>一切准备妥当, 启动 Tomcat, 执行 <span class="code">mvn tomcat7:redeploy</span> 即可部署项目到外部 Tomcat 服务。</div>
 			<div class="precode">
 			[INFO] . . . . . .<br>
 			[INFO] &lt;&lt;&lt; tomcat7-maven-plugin:2.2:redeploy (default-cli) &lt; package @ simapp &lt;&lt;&lt;<br>
