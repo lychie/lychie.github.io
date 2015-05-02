@@ -116,7 +116,7 @@
           <div>像这样来引用它 ：</div>
           <pre class="brush:xml">
             &lt;select id="queryById" parameterType="int" resultMap="productResultMap"&gt;
-              SELECT * FROM PRODUCT WHERE prod_id = #{id}
+              SELECT * FROM PRODUCT WHERE id = #{id}
             &lt;/select&gt;
           </pre>
           <div>注意这里的 resultType 和 resultMap 用法的区别。resultType 表明返回的结果的数据类型, 是查询结果的列映射到的类型, 如我们的实体类、Map 等。resultMap 是外部 ResultMap 的引用, 使用的前提是必须先配备 &lt;resultMap&gt;, &lt;resultMap&gt; 定义了数据库表的列与 JavaBean 属性之间的映射关系。
