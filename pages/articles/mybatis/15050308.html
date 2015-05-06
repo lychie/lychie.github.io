@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+  <title>Mybatis 关联查询</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script src="../../../plugins/fancybox/js/jquery.fancybox-1.3.4.js"></script>
+  <link href="../../../plugins/fancybox/css/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen" />
+  <script>
+    $(document).ready(function() {
+    $("a#fancy").fancybox({
+      'overlayShow':false,
+      'transitionIn':'elastic',
+      'transitionOut':'elastic'
+    });
+    });
+  </script>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+	<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>Mybatis 关联查询</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-05-03</span>
+            <span id="archive">归档：mybatis</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Mybatis 3.2.7</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Spring 4.1.5</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <div>数据库表结构 ：</div>
+          <div><a id="fancy" href="../../../images/articles/mybatis/15050308/db_table_b.png"><img src="../../../images/articles/mybatis/15050308/db_table_s.png" title="查看图片"></a></div>
+          <div>实体类定义 ：</div>
+          <div><a id="fancy" href="../../../images/articles/mybatis/15050308/model_b.png"><img src="../../../images/articles/mybatis/15050308/model_s.png" title="查看图片"></a></div>
+          <pre class="brush:xml">
+            &lt;mapper namespace="org.lychie.mapper.MusicMapper"&gt;
+
+              &lt;resultMap type="Music" id="musicResult"&gt;
+                &lt;id property="id" column="id" /&gt;
+                &lt;result property="name" column="name" /&gt;
+                &lt;result property="singer" column="singer" /&gt;
+                &lt;result property="createTime" column="create_time" /&gt;
+                &lt;association property="lyric" javaType="Lyric"&gt;
+                  &lt;id property="id" column="lyric_id" /&gt;
+                  &lt;result property="name" column="lyric_name" /&gt;
+                  &lt;result property="content" column="lyric_content" /&gt;
+                  &lt;result property="createTime" column="lyric_create_time" /&gt;
+                &lt;/association&gt;
+                &lt;collection property="tags" ofType="Tag"&gt;
+                  &lt;id property="id" column="tag_id" /&gt;
+                  &lt;result property="name" column="tag_name" /&gt;
+                  &lt;result property="createTime" column="tag_create_time" /&gt;
+                &lt;/collection&gt;
+              &lt;/resultMap&gt;
+
+              &lt;select id="queryById" parameterType="int" resultMap="musicResult"&gt;
+                select
+                  m.id, m.name, m.singer, m.create_time, 
+                  l.id as lyric_id, l.name as lyric_name, l.content as lyric_content, l.create_time as lyric_create_time,
+                  t.id as tag_id, t.name as tag_name, t.create_time as tag_create_time
+                from music m
+                  left join lyric l on m.lyric_id = l.id
+                  left join music_tag mt on mt.music_id = m.id
+                  left join tag t on mt.tag_id = t.id
+                where m.id = #{id}
+              &lt;/select&gt;
+
+            &lt;/mapper&gt;
+          </pre>
+          <div>
+            此 SQL 为根据主键查询一条 Music 记录, 其中, Music 关联了一个 Lyric 实体和一个 Tag 集合。表 music 和 lyric 是一对一的关系, music 和 tag 是多对多的关系, music_tag 是中间表。
+          </div>
+          <div>关联 ：</div>
+          <pre class="brush:xml">
+            &lt;association property="lyric" javaType="Lyric"&gt;
+              &lt;id property="id" column="lyric_id" /&gt;
+              &lt;result property="name" column="lyric_name" /&gt;
+              &lt;result property="content" column="lyric_content" /&gt;
+              &lt;result property="createTime" column="lyric_create_time" /&gt;
+            &lt;/association&gt;
+          </pre>
+          <div>
+            &lt;association&gt; 映射一个复杂的类型, 用来处理 "有一个" 的类型关系。如一首音乐有一个歌词。property 指明关联属性的名称, javaType 指明为属性装配的数据类型 ( 类的完全限定名或别名 )。试验得出, 如果不手工配置查询结果列与实体类属性之间的映射关系, 即使类的属性名称与查询结果列的名称一致, 也无法自动映射查询结果的列到类的属性, 即查询结果列的值无法赋到类的属性上。
+          </div>
+          <div>你也可以这样来配置关联 ：</div>
+          <pre class="brush:xml">
+            &lt;association property="lyric" resultMap="lyricResult" /&gt;
+
+            &lt;resultMap type="Lyric" id="lyricResult"&gt;
+              &lt;id property="id" column="lyric_id" /&gt;
+              &lt;result property="name" column="lyric_name" /&gt;
+              &lt;result property="content" column="lyric_content" /&gt;
+              &lt;result property="createTime" column="lyric_create_time" /&gt;
+            &lt;/resultMap&gt;
+          </pre>
+          <div>
+            这里将 Lyric 结果映射单独抽了出来, 这样子可以重用 Lyric 结果映射。如果你不需要重用它, 采用上一种配置方式即可, 当然，你也可以采用这种配置。
+          </div>
+          <div>集合 ：</div>
+          <pre class="brush:xml">
+            &lt;collection property="tags" ofType="Tag"&gt;
+              &lt;id property="id" column="tag_id" /&gt;
+              &lt;result property="name" column="tag_name" /&gt;
+              &lt;result property="createTime" column="tag_create_time" /&gt;
+            &lt;/collection&gt;
+          </pre>
+          <div>
+            与关联非常相似, 只是将 &lt;association&gt; 换成了 &lt;collection&gt;。用来处理 "有多个" 的类型关系。如一首音乐有多个标签。
+          </div>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15050308" data-title="Mybatis 关联查询" data-url="http://lychie.github.io/pages/articles/mybatis/15050308.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
