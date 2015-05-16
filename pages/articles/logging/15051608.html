@@ -1,0 +1,458 @@
+<!doctype html>
+<html>
+<head>
+  <title>log4j</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <script src="../../../javascripts/styles.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script src="../../../plugins/fancybox/js/jquery.fancybox-1.3.4.js"></script>
+  <link href="../../../plugins/fancybox/css/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen" />
+  <script>
+    $(document).ready(function() {
+    $("a#fancy").fancybox({
+      'overlayShow':false,
+      'transitionIn':'elastic',
+      'transitionOut':'elastic'
+    });
+    });
+  </script>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+  <link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>log4j</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-05-16</span>
+            <span id="archive">归档：logging</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Log4j 1.2.16</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <div class="catalog">
+            <div class="switch">[+]</div>
+            <div class="trigger">目录</div>
+            <div class="list">
+              <ul>
+                <li class="1"><a class="anchor">1．pom.xml</a></li>
+                <li class="2"><a class="anchor">2．日志级别</a></li>
+                <li class="3"><a class="anchor">3．PatternLayout</a></li>
+                <li class="4"><a class="anchor">4．属性配置文件语法</a></li>
+                <li class="5"><a class="anchor">5．ConsoleAppender</a></li>
+                <li class="6"><a class="anchor">6．RollingFileAppender</a></li>
+                <li class="7"><a class="anchor">7．DailyRollingFileAppender</a></li>
+                <li class="8"><a class="anchor">8．SMTPAppender</a></li>
+                <li class="9"><a class="anchor">9．JDBCAppender</a></li>
+              </ul>
+            </div>
+          </div>
+          <span class="fragment en" id="1">pom.xml</span>
+          <pre class="brush:xml">
+          &lt;dependency&gt;
+            &lt;groupId&gt;log4j&lt;/groupId&gt;
+            &lt;artifactId&gt;log4j&lt;/artifactId&gt;
+            &lt;version&gt;1.2.16&lt;/version&gt;
+          &lt;/dependency&gt;
+          </pre>
+          <span class="fragment en" id="2">日志级别</span>
+          <div>
+            org.apache.log4j.Level 提供了 8 种日志信息的级别, 它们按从小到大的关系为：<br>
+            ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF<br>
+            假设配置的日志级别为 X, 使用的级别为 Y, 当且仅当 Y >= X 时, 日志请求才会被处理，否则被忽略。
+          </div>
+          <pre class="brush:java">
+            public class LogLevelTest {
+
+              private Logger log = Logger.getLogger(LogLevelTest.class);
+              
+              @Test
+              public void testLevel() {
+                log.setLevel(Level.INFO);
+                log.info("log info message");
+                log.error("log error message");
+                log.debug("log debug message");
+              }
+              
+            }
+          </pre>
+          <div>
+            这里设置了日志的级别为 INFO, 那么, INFO 和 ERROR 级别的信息将被处理, DEBUG 级别的信息将被忽略。执行单元测试的结果 ：
+          </div>
+          <div class="precode">
+            log info message<br>
+            log error message
+          </div>
+          <span class="fragment en" id="3">PatternLayout</span>
+          <div>
+            org.apache.log4j.PatternLayout 的 conversionPattern 属性可以设置日志信息格式化的模式串, 可以灵活的控制日志信息的格式布局。
+            <p class="text" style="margin-top:-4px;">
+              <table class="bordered">
+              <thead>
+                <tr>
+                  <th width="35%">Format</th>
+                <th width="65%">Desc</th>
+                </tr>
+               </thead>
+               <tr>
+                 <td>%c</td>
+                 <td>输出发出日志请求的类的完全限定名</td>
+               </tr>
+               <tr>
+                 <td>%d</td>
+                 <td>输出日志发生的时间, 如 %d{yyyy-MM-dd HH:mm:ss}</td>
+               </tr>
+               <tr>
+                 <td>%F</td>
+                 <td>输出发出日志请求的类的文件名</td>
+               </tr>
+               <tr>
+                 <td>%l</td>
+                 <td>输出发出日志请求的位置信息</td>
+               </tr>
+               <tr>
+                 <td>%L</td>
+                 <td>输出发出日志请求的行的行号</td>
+               </tr>
+               <tr>
+                 <td>%m</td>
+                 <td>输出运用程序提供的日志信息</td>
+               </tr>
+               <tr>
+                 <td>%M</td>
+                 <td>输出发出日志请求的方法名称</td>
+               </tr>
+               <tr>
+                 <td>%n</td>
+                 <td>输出一个换行符</td>
+               </tr>
+               <tr>
+                 <td>%p</td>
+                 <td>输出日志的级别</td>
+               </tr>
+               <tr>
+                 <td>%t</td>
+                 <td>输出记录日志的线程的名称</td>
+               </tr>
+               <tr>
+                 <td>%-5p</td>
+                 <td>输出日志的级别, 如果长度少于 5 个字符, 用空格右补足</td>
+               </tr>
+               <tr>
+                 <td>%5p</td>
+                 <td>输出日志的级别, 如果长度少于 5 个字符, 用空格左补足</td>
+               </tr>
+              </table>
+            </p>
+          </div>
+          <span class="fragment en" id="4">属性配置文件语法</span>
+          <div>
+            root logger 配置, 其中 appender1, appender2 是 Appender 组件, 可以配置多个, 用 "," 隔开 ：<br>
+            <span class="code">log4j.rootLogger = [日志级别], appender1, appender2 . . .</span><br><div style="height:10px">&nbsp;</div>
+            appender 配置, 常见的如 ConsoleAppender, DailyRollingFileAppender, RollingFileAppender 等 ：<br>
+            <span class="code">log4j.appender.appender1 = org.apache.log4j.ConsoleAppender</span><br><div style="height:10px">&nbsp;</div>
+            appender 属性配置, 如 ConsoleAppender 的 target 属性 ：<br>
+            <span class="code">log4j.appender.appender1.target = System.out</span><br><div style="height:10px">&nbsp;</div>
+            layout 配置, 常见的如 PatternLayout, HTMLLayout, TTCCLayout 等 ：<br>
+            <span class="code">log4j.appender.appender1.layout = org.apache.log4j.PatternLayout</span><br><div style="height:10px">&nbsp;</div>
+            layout 属性配置, 如 PatternLayout 的 conversionPattern 属性 ：<br>
+            <span class="code">log4j.appender.appender1.layout.conversionPattern = %-5p %d{yyyy-MM-dd HH:mm:ss} %c : %L %n%m%n</span><div style="height:10px">&nbsp;</div>
+          </div>
+          <span class="fragment en" id="5">ConsoleAppender</span>
+          <div>
+            用于在控制台输出日志信息, log4j.properties 文件的配置如下 ：
+            <pre class="brush:html">
+              log4j.rootLogger = INFO, console
+              log4j.appender.console = org.apache.log4j.ConsoleAppender
+              log4j.appender.console.target = System.out
+              log4j.appender.console.layout = org.apache.log4j.PatternLayout
+              log4j.appender.console.layout.conversionPattern = %p %d{yyyy-MM-dd HH:mm:ss} %c : %L %n%m%n%n
+            </pre>
+          </div>
+          <pre class="brush:java">
+            public class Log4jTest {
+
+              private Logger log = Logger.getLogger(Log4jTest.class);
+              
+              @Test
+              public void testInfo() {
+                log.info("log info message");
+              }
+              
+              @Test
+              public void testError() {
+                log.error("log error message");
+              }
+              
+            }
+          </pre>
+          执行单元测试 ：
+          <div class="precode">
+          INFO 2015-05-16 08:43:10 org.lychie.log4j.tutorial.Log4jTest : 13 <br>
+          log info message<br><div style="height:18px">&nbsp;</div>
+          ERROR 2015-05-16 08:43:10 org.lychie.log4j.tutorial.Log4jTest : 18 <br>
+          log error message<br>
+          </div><div style="height:10px">&nbsp;</div>
+          <span class="fragment en" id="6">RollingFileAppender</span>
+          <div>
+            org.apache.log4j.RollingFileAppender 日志文件大小达到指定大小时, 产生一个新的文件。
+          </div>
+          <pre class="brush:xml">
+            log4j.rootLogger = INFO, roll
+            log4j.appender.roll = org.apache.log4j.RollingFileAppender
+            # 日志文件名称
+            log4j.appender.roll.file = my.log
+            # 日志文件大小
+            log4j.appender.roll.maxFileSize = 5KB
+            # 备份日志文件的个数
+            log4j.appender.roll.maxBackupIndex = 3
+            log4j.appender.roll.layout = org.apache.log4j.PatternLayout
+            log4j.appender.roll.layout.conversionPattern = %p %d{yyyy-MM-dd HH:mm:ss} %c : %L %n%m%n%n
+          </pre>
+          <div>
+            日志文件大小默认是 1MB, 可以指定为 KB、MB、GB。备份日志文件的个数默认是 1 个, 如果设置为 0 个, 则表示不备份, 当文件大小达到指定大小时, 将覆盖当前日志文件的内容。
+          </div>
+          <pre class="brush:java">  
+            public class RollingFileAppenderTest {
+
+              private static final int MAX_COUNT = 500;
+              private Logger log = Logger.getLogger(RollingFileAppenderTest.class);
+
+                @Test
+                public void test() throws Throwable {
+                  for (int i = 0; i < MAX_COUNT; i++) {
+                    log.info("log info message - index : " + i);
+                    Thread.sleep(100);
+                  }
+                }
+              
+            }
+          </pre>
+          <div>
+            执行单元测试, 在项目根目录下产生 4 个文件, my.log, my.log.1, my.log.2, my.log.3。my.log.3 是最早产生的文件, my.log 是最晚产生的文件, 它们按时间从早到晚的顺序依次是 ：my.log < my.log.1 < my.log.2 < my.log.3
+          </div><div style="height:10px">&nbsp;</div>
+          <span class="fragment en" id="7">DailyRollingFileAppender</span>
+          <div>
+            org.apache.log4j.DailyRollingFileAppender 每天产生一个新的日志文件。
+          </div>
+          <pre class="brush:xml">
+            log4j.rootLogger = INFO, daily
+            log4j.appender.daily = org.apache.log4j.DailyRollingFileAppender
+            log4j.appender.daily.file = my.log
+            log4j.appender.daily.datePattern = '.'yyyy-MM-dd
+            log4j.appender.daily.layout = org.apache.log4j.PatternLayout
+            log4j.appender.daily.layout.conversionPattern = %p %d{yyyy-MM-dd HH:mm:ss} %c : %L %n%m%n%n
+          </pre>
+          <div>
+            my.log 记录的是当天的日志内容, 今天是2015年5月16日, 那么昨天的日志内容就会被备份到 my.log.2015-05-15 文件中。
+          </div><div style="height:10px">&nbsp;</div>
+          <span class="fragment en" id="8">SMTPAppender</span>
+          <div>
+            org.apache.log4j.net.SMTPAppender 具有发送邮件的能力。使用时, 需要引入 mail 依赖包 ：
+          </div>
+          <pre class="brush:xml">
+                &lt;dependency&gt;
+                  &lt;groupId&gt;javax.mail&lt;/groupId&gt;
+                  &lt;artifactId&gt;mail&lt;/artifactId&gt;
+                  &lt;version&gt;1.4.7&lt;/version&gt;
+                &lt;/dependency&gt;
+          </pre>
+          <div>
+            log4j.properties 配置文件配置 ：
+          </div>
+          <pre class="brush:html">
+            log4j.rootLogger = INFO, mail, console
+            log4j.appender.mail = org.apache.log4j.net.SMTPAppender
+            # 日志的级别
+            log4j.appender.mail.threshold = ERROR
+            # 缓冲区大小
+            log4j.appender.mail.bufferSize = 512
+            # 邮件标题
+            log4j.appender.mail.subject = Log Error Message
+            # 发件人
+            log4j.appender.mail.from = lychie@yeah.net
+            # 收件人
+            log4j.appender.mail.to = lychie@yeah.net
+            # 抄送人
+            log4j.appender.mail.cc = fanejob@163.com,fanejob@126.com
+            # 使用的协议
+            log4j.appender.mail.SMTPProtocol = smtp
+            # 邮件服务器
+            log4j.appender.mail.SMTPHost = smtp.yeah.net
+            # 邮件账户名
+            log4j.appender.mail.SMTPUsername = lychie
+            # 邮件账户密码
+            log4j.appender.mail.SMTPPassword = ******
+            log4j.appender.mail.layout = org.apache.log4j.PatternLayout
+            log4j.appender.mail.layout.conversionPattern = %p %d{yyyy-MM-dd HH:mm:ss} %c : %L %n%m%n%n
+          </pre>
+          <pre class="brush:java">
+            public class SMTPAppenderTest {
+
+              private Logger log = Logger.getLogger(SMTPAppenderTest.class);
+              
+              @Test
+              public void testInfo() {
+                log.info("log info message");
+              }
+              
+              @Test
+              public void testError() {
+                try {
+                  int randomNumber = ThreadLocalRandom.current().nextInt(2);
+                  randomNumber = 1 / randomNumber;
+                } catch (Throwable e) {
+                  log.error("log error message", e);
+                }
+              }
+              
+            }
+          </pre>
+          <div>
+            执行单元测试, 只要当运用程序发生 ERROR 或更高级别的错误, lychie@yeah.net、fanejob@163.com、fanejob@126.com 将分别得到一个邮件通知：
+          </div>
+          <div><a id="fancy" href="../../../images/articles/logging/15051608/log4j_email_b.png"><img src="../../../images/articles/logging/15051608/log4j_email_s.png" title="查看图片"></a></div><div style="height:10px">&nbsp;</div>
+          <span class="fragment en" id="9">JDBCAppender</span>
+          <div>
+            org.apache.log4j.jdbc.JDBCAppender 具有能够将日志信息存储到数据库的能力。这里使用 mysql 数据库, 引入驱动依赖包 ：
+          </div>
+          <pre class="brush:xml">
+                &lt;dependency&gt;
+                  &lt;groupId&gt;mysql&lt;/groupId&gt;
+                  &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+                  &lt;version&gt;5.1.17&lt;/version&gt;
+                &lt;/dependency&gt;
+          </pre>
+          <div>
+            创建表结构 ：
+          </div>
+          <pre class="brush:sql">
+            CREATE TABLE logs (
+              id int(11) NOT NULL AUTO_INCREMENT,
+              level varchar(5) NOT NULL,
+              logger varchar(128) NOT NULL,
+              message text NOT NULL,
+              date_time datetime NOT NULL,
+              PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+          </pre>
+          <div>
+            log4j.properties 配置文件配置 ：
+          </div>
+          <pre class="brush:html">
+            log4j.rootLogger = INFO, db
+            log4j.appender.db = org.apache.log4j.jdbc.JDBCAppender
+            log4j.appender.db.URL = jdbc:mysql://localhost:3306/log4j_schema
+            log4j.appender.db.driver = com.mysql.jdbc.Driver
+            log4j.appender.db.user = root
+            log4j.appender.db.password = root
+            log4j.appender.db.sql = insert into logs(level, logger, message, date_time) values('%p', '%c', '%m', '%d{yyyy-MM-dd HH:mm:ss}')
+            log4j.appender.db.layout = org.apache.log4j.PatternLayout
+          </pre>
+          <pre class="brush:java">
+            public class JDBCAppenderTest {
+
+              private Logger log = Logger.getLogger(JDBCAppenderTest.class);
+              
+              @Test
+              public void testInfo() {
+                log.info("log info message");
+              }
+              
+              @Test
+              public void testError() {
+                try {
+                  int randomNumber = ThreadLocalRandom.current().nextInt(2);
+                  randomNumber = 1 / randomNumber;
+                } catch (Throwable e) {
+                  log.error(e);
+                }
+              }
+              
+            }
+          </pre>
+          <div>
+            执行单元测试, 数据库表数据 ：<br>
+            <img src="../../../images/articles/logging/15051608/log4j_schema.png">
+          </div>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15051608" data-title="log4j" data-url="http://lychie.github.io/pages/articles/logging/15051608.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
