@@ -23,7 +23,7 @@
 	padding: 0 0 0 0;
 }
 
-#main-content ul li {
+/* #main-content ul li {
 	display: inline;
 	list-style: none;
 	background: url("images/bullet.png") 0px 0px no-repeat;
@@ -31,7 +31,7 @@
 	padding-right: 28px;
 	letter-spacing: 0.7px;
 	line-height: 35px;
-}
+} */
 
 #main-content a:hover {
 	color: #FF69B4;
@@ -425,4 +425,34 @@ a#fancy img{
 
 .tab {
 	padding-left: 20px;
+}
+
+.catalog {
+	width: 510px;
+	border: solid 1px #CCCCCC;
+	padding: 0 5px;
+	margin-bottom: 15px;
+	background-color: #EFEAEA;
+}
+
+.catalog .switch {
+	float: right;
+	cursor: pointer;
+}
+
+.catalog .list {
+	display: none;
+}
+
+.catalog .list ul {
+	margin: 0;
+}
+
+.catalog .list ul li {
+	list-style: none;
+	margin: 0 25px;
+}
+
+.catalog .list ul li a {
+	cursor: pointer;
 }
