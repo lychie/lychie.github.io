@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+  <title>Spring bean id & name</title>
+  <meta name="robots" content="all"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <meta name="author" content="lychie fan,Lychie Fan,范忠云"/>
+  <link href="../../../stylesheets/styles.css" rel="stylesheet">
+  <link href="../../../stylesheets/main.css" rel="stylesheet">
+  <script src="../../../javascripts/jquery-1.7.1.min.js"></script>
+  <script src="../../../javascripts/styles.js"></script>
+  <link href="../../../plugins/scrolltotop/css/main.css" rel="stylesheet">
+  <script src="../../../plugins/scrolltotop/js/main.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shCore.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushBash.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushCss.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJava.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushSql.js"></script>
+  <script src="../../../plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+  <link href="../../../plugins/syntaxhighlighter/styles/shCore.css" rel="stylesheet"/>
+  <link href="../../../plugins/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet"/>
+  <script>
+    SyntaxHighlighter.config.clipboardSwf = '../../../plugins/syntaxhighlighter/scripts/clipboard.swf';
+    SyntaxHighlighter.all();
+  </script>
+  <link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+  <header>
+    <div id='cssmenu'>
+      <ul>
+        <li>
+          <a href='../../../index.html'>首 页</a>
+        </li>
+        <li class='active'>
+          <a href='../../../articles.html'>文 章</a>
+        </li>
+        <li>
+          <a href='../../../archives.html'>归 档</a>
+        </li>
+        <li>
+          <a href='../../../classlib.html'>类 库</a>
+        </li>
+        <li class='last'>
+          <a href='../../../about.html'>关 于</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="wrapper">
+    <section>
+      <div id="main-content">
+        <div id="article-title">
+          <p>Spring bean id & name</p>
+        </div>
+        <div id="article-attribute">
+          <p>
+            <span id="author">作者：範宗雲</span>
+            <span id="origin">来源：原创</span>
+            <span id="posted">发布时间：2015-05-18</span>
+            <span id="archive">归档：spring</span>
+          </p>
+        </div>
+        <div id="contents">
+          <div id="dev">
+            <span>环境 ：</span>
+            <span class="items">JDK 7</span>
+            <span class="items">Spring 4.1.5</span>
+            <span class="items">Maven 3</span>
+            <span class="items">Junit 4.11</span>
+            <span class="items">Eclipse Luna</span>
+          </div>
+          <div class="catalog">
+            <div class="switch">[+]</div>
+            <div class="trigger">目录</div>
+            <div class="list">
+              <ul>
+                <li class="1"><a class="anchor">1．id</a></li>
+                <li class="2"><a class="anchor">2．name</a></li>
+                <li class="3"><a class="anchor">3．id 与 name 的区别</a></li>
+              </ul>
+            </div>
+          </div>
+          <span class="fragment en" id="1">id</span>
+          <div>
+            定义 bean 的唯一标识。在上下文环境中必须要确保其唯一性。
+          </div>
+          <pre class="brush:xml">
+            [...]
+            &lt;bean id="userDaoImpl" class="org.lychie.dao.impl.UserDaoImpl" /&gt;
+            [...]
+          </pre>
+          <div>
+            可以通过 getBean(String) 根据配置的 id 标识符来获取 Bean
+          </div>
+          <pre class="brush:java">
+            [...]
+            UserDao userDao = (UserDao) applicationContext.getBean("userDaoImpl");
+            [...]
+          </pre>
+          <div>
+            当然也可以通过 getBean(Class) 根据类型来获取 Bean
+          </div>
+          <pre class="brush:java">
+            [...]
+            UserDao userDao = applicationContext.getBean(UserDao.class);
+            [...]
+          </pre>
+          <span class="fragment en" id="2">name</span>
+          <div>
+            定义 bean 的别名, 可以定义多个, 多个之间用分隔符 逗号(",") 或 分号(";") 或 空格(" ") 隔开。同时必须确保每一个别名在上下文环境中都是唯一的。
+          </div>
+          <pre class="brush:xml">
+            [...]
+            &lt;bean name="userDaoImpl,userDao" class="org.lychie.dao.impl.UserDaoImpl" /&gt;
+            [...]
+          </pre>
+          <div>
+            可以通过 getBean(String) 根据配置的别名来获取 Bean
+          </div>
+          <pre class="brush:java">
+            @ContextConfiguration("/beans.xml")
+			public class UserDaoImplTest extends AbstractJUnit4SpringContextTests {
+			
+				@Test
+				public void doTest() {
+					UserDao userDao1 = (UserDao) applicationContext.getBean("userDao");
+					UserDao userDao2 = (UserDao) applicationContext.getBean("userDaoImpl");
+					assertThat(userDao1, is(notNullValue()));
+					assertThat(userDao2, is(notNullValue()));
+					// true
+					System.out.println(userDao1 == userDao2);
+				}
+				
+			}
+          </pre>
+          <span class="fragment en" id="3">id 与 name 的区别</span>
+          <div>
+          在当前的版本(4.*), id 与 name 几乎是等效的。它们最大的区别在于, id 只能定义一个标识符, 而 name 可以同时定义  bean 的多个标识符, 在上下文环境中, 它们都要求是唯一的。我们通常用 id 为 bean 定义一个唯一的标识符, 如果 bean 需要一个以上的标识符, 可以使用 name 来定义额外的别名, 同时, id 和 name 是可以共存的, id 和 name 都可以用来查找得到 bean。
+          </div>
+          <p>&nbsp;</p>
+          <div class="jiathis_style_24x24" style="float:right;">
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_tqq"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_t163"></a>
+            <a class="jiathis_button_xiaoyou"></a>
+            <a class="jiathis_button_hi"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+            <a class="jiathis_counter_style"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+          <script src="../../../plugins/duoshuo/main.js"></script>
+          <div class="ds-thread" data-thread-key="15051820" data-title="Spring bean id & name" data-url="http://lychie.github.io/pages/articles/spring/15051820.html"></div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>
+        Copyright 2014-2015 Lychie Fan, Hosted on github.
+        <span id="cnzz">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254544900'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254544900%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
