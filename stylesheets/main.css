@@ -456,3 +456,7 @@ a#fancy img{
 .catalog .list ul li a {
 	cursor: pointer;
 }
+
+.catalog .list ul li a.child {
+	padding-left: 20px;
+}
